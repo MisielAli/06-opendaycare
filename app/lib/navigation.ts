@@ -5,8 +5,8 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { id: "feed", label: "Feed", href: "#" },
-  { id: "children", label: "Niños", href: "#" },
+  { id: "feed", label: "Feed", href: "/" },
+  { id: "children", label: "Niños", href: "/kids" },
   { id: "notices", label: "Avisos", href: "#" },
   { id: "account", label: "Mi cuenta", href: "#" },
 ];

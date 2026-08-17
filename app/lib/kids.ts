@@ -1,0 +1,210 @@
+export type ParentStatus = "active" | "pending";
+
+export interface ParentLink {
+  name: string;
+  roleLabel: string;
+  status: ParentStatus;
+  avatarColor: string;
+}
+
+export interface Kid {
+  id: string;
+  name: string;
+  birthDate: string;
+  room: string;
+  enrollmentLabel: string;
+  allergyLabel?: string;
+  allergyNotes?: string;
+  avatarColor: string;
+  avatarTextColor: string;
+  parents: ParentLink[];
+}
+
+export const kids: Kid[] = [
+  {
+    id: "0001",
+    name: "Mateo Fernández",
+    birthDate: "2022-03-12",
+    room: "Soles",
+    enrollmentLabel: "feb 2025",
+    allergyLabel: "MANÍ",
+    allergyNotes:
+      "Alergia al maní. Evitar frutos secos. Lleva inhalador en la mochila.",
+    avatarColor: "#A9D9E8",
+    avatarTextColor: "#1F7A93",
+    parents: [
+      {
+        name: "Lucía Fernández",
+        roleLabel: "Mamá",
+        status: "active",
+        avatarColor: "#C9B6E8",
+      },
+      {
+        name: "Diego Fernández",
+        roleLabel: "Papá",
+        status: "pending",
+        avatarColor: "#A9C7E8",
+      },
+    ],
+  },
+  {
+    id: "0002",
+    name: "Sofía Méndez",
+    birthDate: "2023-05-23",
+    room: "Soles",
+    enrollmentLabel: "mar 2025",
+    avatarColor: "#F4B8CC",
+    avatarTextColor: "#C44A7A",
+    parents: [
+      {
+        name: "Mariana Méndez",
+        roleLabel: "Mamá",
+        status: "active",
+        avatarColor: "#E7A6C0",
+      },
+    ],
+  },
+  {
+    id: "0003",
+    name: "Benjamín Ruiz",
+    birthDate: "2022-09-18",
+    room: "Soles",
+    enrollmentLabel: "feb 2025",
+    avatarColor: "#B9DEC4",
+    avatarTextColor: "#3E8B62",
+    parents: [
+      {
+        name: "Carolina Ruiz",
+        roleLabel: "Mamá",
+        status: "active",
+        avatarColor: "#B9DEC4",
+      },
+      {
+        name: "Pablo Ruiz",
+        roleLabel: "Papá",
+        status: "active",
+        avatarColor: "#A9C7E8",
+      },
+    ],
+  },
+  {
+    id: "0004",
+    name: "Valentina Soto",
+    birthDate: "2023-11-05",
+    room: "Soles",
+    enrollmentLabel: "abr 2025",
+    avatarColor: "#F4DC8E",
+    avatarTextColor: "#9A7B1E",
+    parents: [],
+  },
+  {
+    id: "0005",
+    name: "Tomás Díaz",
+    birthDate: "2022-06-28",
+    room: "Soles",
+    enrollmentLabel: "feb 2025",
+    allergyLabel: "LACTOSA",
+    allergyNotes: "Intolerancia a la lactosa. Ofrecer alternativas sin lácteos.",
+    avatarColor: "#C9B6E8",
+    avatarTextColor: "#7B5FC0",
+    parents: [
+      {
+        name: "Martín Díaz",
+        roleLabel: "Papá",
+        status: "active",
+        avatarColor: "#A9C7E8",
+      },
+    ],
+  },
+  {
+    id: "0006",
+    name: "Emma Castro",
+    birthDate: "2023-04-15",
+    room: "Soles",
+    enrollmentLabel: "mar 2025",
+    avatarColor: "#F4B8CC",
+    avatarTextColor: "#C44A7A",
+    parents: [
+      {
+        name: "Ana Castro",
+        roleLabel: "Mamá",
+        status: "active",
+        avatarColor: "#F4B8CC",
+      },
+    ],
+  },
+  {
+    id: "0007",
+    name: "Lucas Romero",
+    birthDate: "2022-12-01",
+    room: "Soles",
+    enrollmentLabel: "feb 2025",
+    avatarColor: "#A9D9E8",
+    avatarTextColor: "#1F7A93",
+    parents: [
+      {
+        name: "Javier Romero",
+        roleLabel: "Papá",
+        status: "active",
+        avatarColor: "#A9D9E8",
+      },
+    ],
+  },
+  {
+    id: "0008",
+    name: "Olivia Vega",
+    birthDate: "2023-08-09",
+    room: "Soles",
+    enrollmentLabel: "abr 2025",
+    avatarColor: "#B9DEC4",
+    avatarTextColor: "#3E8B62",
+    parents: [
+      {
+        name: "Elena Vega",
+        roleLabel: "Mamá",
+        status: "active",
+        avatarColor: "#B9DEC4",
+      },
+    ],
+  },
+];
+
+export function getAgeLabel(birthDate: string): string {
+  const [birthYear, birthMonth, birthDay] = birthDate.split("-").map(Number);
+  const today = new Date();
+  let age = today.getFullYear() - birthYear;
+
+  if (
+    today.getMonth() + 1 < birthMonth ||
+    (today.getMonth() + 1 === birthMonth && today.getDate() < birthDay)
+  ) {
+    age -= 1;
+  }
+
+  return `${age} ${age === 1 ? "año" : "años"}`;
+}
+
+export function formatBirthDate(birthDate: string): string {
+  const [year, month, day] = birthDate.split("-");
+  const monthLabels = [
+    "ene",
+    "feb",
+    "mar",
+    "abr",
+    "may",
+    "jun",
+    "jul",
+    "ago",
+    "sep",
+    "oct",
+    "nov",
+    "dic",
+  ];
+
+  return `${Number(day)} ${monthLabels[Number(month) - 1]} ${year}`;
+}
+
+export const parentStatusLabels: Record<ParentStatus, string> = {
+  active: "ACTIVA",
+  pending: "PENDIENTE",
+};

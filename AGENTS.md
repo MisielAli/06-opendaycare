@@ -8,6 +8,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+## Next.js local docs
+
+- `node_modules/` is ignored by Git, so Glob may omit its contents. Do not conclude that Next.js documentation is missing from a Glob result.
+- Read `node_modules/next/dist/docs/index.md` and the relevant direct path under `node_modules/next/dist/docs/` before writing Next.js code. If a direct read fails, verify the directory with `Test-Path` before reporting it missing.
+
 ## Commands
 
 - `npm run dev` — dev server at http://localhost:3000 (Turbopack)
