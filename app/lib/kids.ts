@@ -1,5 +1,7 @@
 export type ParentStatus = "active" | "pending";
 
+export type ParentRole = "Mamá" | "Papá" | "Tutor/a";
+
 export type RoomName = "Soles" | "Luna" | "Estrellas";
 
 export interface RoomOption {
@@ -14,12 +16,20 @@ export interface AddKidFormValues {
   medicalNotes: string;
 }
 
+export interface LinkParentFormValues {
+  fullName: string;
+  email: string;
+  roleLabel: ParentRole;
+}
+
 export interface ParentLink {
   name: string;
   roleLabel: string;
   status: ParentStatus;
   avatarColor: string;
 }
+
+export const pendingParentAvatarColor = "#A9C7E8";
 
 export interface Kid {
   id: string;

@@ -1,4 +1,12 @@
-import { parentStatusLabels, type ParentLink } from "@/app/lib/kids";
+"use client";
+
+import { useRef, useState } from "react";
+import {
+  parentStatusLabels,
+  pendingParentAvatarColor,
+  type ParentLink,
+} from "@/app/lib/kids";
+import { LinkParentModal } from "@/components/kids/LinkParentModal";
 
 function getParentDetails(parent: ParentLink) {
   return parent.status === "active"
@@ -6,15 +14,28 @@ function getParentDetails(parent: ParentLink) {
     : `${parent.roleLabel} · invitación enviada`;
 }
 
-export function ParentsPanel({ parents }: { parents: ParentLink[] }) {
+export function ParentsPanel({ kidName, parents }: { kidName: string; parents: ParentLink[] }) {
+  const [pendingParents, setPendingParents] = useState<ParentLink[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openerRef = useRef<HTMLButtonElement>(null);
+  const displayedParents = [...parents, ...pendingParents];
+
+  function addPendingParent({ fullName, roleLabel }: { fullName: string; roleLabel: string }) {
+    setPendingParents((currentParents) => [
+      ...currentParents,
+      { name: fullName, roleLabel, status: "pending", avatarColor: pendingParentAvatarColor },
+    ]);
+    setIsModalOpen(false);
+  }
+
   return (
     <div className="rounded-2xl border border-border-soft bg-card px-[18px] py-4">
       <div className="mb-3.5 text-[12.5px] font-extrabold tracking-[0.8px] text-[#8A7C6D]">
         PADRES VINCULADOS
       </div>
       <div className="flex flex-col gap-3.5">
-        {parents.map((parent) => (
-          <div key={parent.name} className="flex items-center gap-3">
+        {displayedParents.map((parent, index) => (
+          <div key={`${parent.name}-${index}`} className="flex items-center gap-3">
             <div
               className="flex h-10 w-10 flex-none items-center justify-center rounded-full font-display text-[16px] font-semibold text-white"
               style={{ backgroundColor: parent.avatarColor }}
@@ -41,7 +62,9 @@ export function ParentsPanel({ parents }: { parents: ParentLink[] }) {
           </div>
         ))}
         <button
+          ref={openerRef}
           type="button"
+          onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-3 pt-2 text-left"
         >
           <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#D8CBBA] text-[#B0A290]">
@@ -64,6 +87,7 @@ export function ParentsPanel({ parents }: { parents: ParentLink[] }) {
           </span>
         </button>
       </div>
+      {isModalOpen ? <LinkParentModal kidName={kidName} openerRef={openerRef} onClose={() => setIsModalOpen(false)} onSubmit={addPendingParent} /> : null}
     </div>
   );
 }
