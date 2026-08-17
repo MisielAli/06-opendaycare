@@ -1,6 +1,6 @@
 # Spec 02 — Niños: lista y perfil (estático)
 
-**Estado:** Aprovado
+**Estado:** Implementado
 **Depende de:** SPEC 01
 **Fecha:** 2026-08-17
 
@@ -100,22 +100,22 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] `/kids` renderiza el encabezado, buscador, separador "SALA SOLES · 8 niños" y los 8 niños del mockup en una grilla de dos columnas
-- [ ] Cada tarjeta muestra avatar con inicial y colores, nombre, edad calculada, cantidad de padres vinculados y el badge o chevron correspondiente
-- [ ] Mateo muestra MANÍ, Valentina muestra VINCULAR, Tomás muestra LACTOSA y los demás muestran chevron
-- [ ] La edad se calcula desde `birthDate`; no existen etiquetas de edad hardcodeadas en los datos
-- [ ] El cálculo usa la fecha actual y maneja correctamente "1 año" y "N años", aunque el resultado difiera del texto histórico del mockup
-- [ ] Escribir en el buscador filtra por nombre en tiempo real y una búsqueda sin coincidencias muestra un mensaje vacío simple
-- [ ] El hover de cada tarjeta cambia el borde a `#F2A78E` y aplica `translateY(-2px)`
-- [ ] El item "Niños" aparece activo en el sidebar con fondo `#FBE3D8` y texto `#D9583C`
-- [ ] `/kids/0001` reproduce el perfil de Mateo del mockup: avatar de 84 px, alerta de alergia con el texto exacto, fecha "12 mar 2022", sala "Soles", ingreso "feb 2025", botón "Resumen del día", Lucía ACTIVA, Diego PENDIENTE, acción "Vincular otro padre" y enlace "Volver a Niños"
-- [ ] Los otros 7 IDs renderizan perfiles completos con sus datos y un ID inexistente responde con 404
-- [ ] Los botones y enlaces a pantallas fuera de alcance mantienen la apariencia del mockup sin navegación funcional
-- [ ] En viewport angosto la grilla usa una columna y el panel derecho del perfil se apila debajo de los datos principales
-- [ ] Las capturas de `/kids` y `/kids/0001` se guardan en `.playwright-mcp/` y se comparan lado a lado con los mockups
-- [ ] `npm run lint` y `npx tsc --noEmit` pasan sin errores
-- [ ] No hay base de datos ni llamadas a API
-- [ ] Los identificadores están en inglés y el texto visible está en español
+- [x] `/kids` renderiza el encabezado, buscador, separador "SALA SOLES · 8 niños" y los 8 niños del mockup en una grilla de dos columnas
+- [x] Cada tarjeta muestra avatar con inicial y colores, nombre, edad calculada, cantidad de padres vinculados y el badge o chevron correspondiente
+- [x] Mateo muestra MANÍ, Valentina muestra VINCULAR, Tomás muestra LACTOSA y los demás muestran chevron
+- [x] La edad se calcula desde `birthDate`; no existen etiquetas de edad hardcodeadas en los datos
+- [x] El cálculo usa la fecha actual y maneja correctamente "1 año" y "N años", aunque el resultado difiera del texto histórico del mockup
+- [x] Escribir en el buscador filtra por nombre en tiempo real y una búsqueda sin coincidencias muestra un mensaje vacío simple
+- [x] El hover de cada tarjeta cambia el borde a `#F2A78E` y aplica `translateY(-2px)`
+- [x] El item "Niños" aparece activo en el sidebar con fondo `#FBE3D8` y texto `#D9583C`
+- [x] `/kids/0001` reproduce el perfil de Mateo del mockup: avatar de 84 px, alerta de alergia con el texto exacto, fecha "12 mar 2022", sala "Soles", ingreso "feb 2025", botón "Resumen del día", Lucía ACTIVA, Diego PENDIENTE, acción "Vincular otro padre" y enlace "Volver a Niños"
+- [x] Los otros 7 IDs renderizan perfiles completos con sus datos y un ID inexistente responde con 404
+- [x] Los botones y enlaces a pantallas fuera de alcance mantienen la apariencia del mockup sin navegación funcional
+- [x] En viewport angosto la grilla usa una columna y el panel derecho del perfil se apila debajo de los datos principales
+- [x] Las capturas de `/kids` y `/kids/0001` se guardan en `.playwright-mcp/` y se comparan lado a lado con los mockups
+- [x] `npm run lint` y `npx tsc --noEmit` pasan sin errores
+- [x] No hay base de datos ni llamadas a API
+- [x] Los identificadores están en inglés y el texto visible está en español
 
 ## Decisiones tomadas y descartadas
 
