@@ -40,9 +40,9 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
         Volver a Niños
       </Link>
 
-      <div className="flex flex-wrap items-start gap-[26px]">
-        <div className="flex min-w-[300px] flex-1 flex-col gap-[18px]">
-          <div className="flex items-center gap-[18px]">
+      <div className="flex flex-col items-start gap-[26px] lg:flex-row">
+        <div className="flex w-full min-w-0 flex-1 flex-col gap-[18px]">
+          <div className="grid grid-cols-[84px_minmax(0,1fr)] gap-[18px] sm:flex sm:items-center">
             <div
               className="flex h-[84px] w-[84px] flex-none items-center justify-center rounded-full font-display text-[34px] font-semibold"
               style={{ backgroundColor: kid.avatarColor, color: kid.avatarTextColor }}
@@ -50,7 +50,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
               {kid.name[0]}
             </div>
             <div className="min-w-0 flex-1">
-              <h1 className="m-0 truncate font-display text-[28px] font-semibold text-foreground">
+              <h1 className="m-0 font-display text-[28px] font-semibold text-foreground sm:truncate">
                 {kid.name}
               </h1>
               <p className="mt-[3px] text-[15px] text-text-muted">
@@ -59,7 +59,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
             </div>
             <button
               type="button"
-              className="rounded-[12px] border-[1.5px] border-border-soft bg-card px-4 py-[9px] text-[14px] font-bold text-nav-text"
+              className="col-start-2 justify-self-start rounded-[12px] border-[1.5px] border-border-soft bg-card px-4 py-[9px] text-[14px] font-bold text-nav-text sm:col-auto"
             >
               Editar
             </button>
@@ -74,7 +74,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
           </div>
         </div>
 
-        <div className="flex w-[300px] flex-none flex-col gap-3.5">
+        <div className="flex w-full flex-none flex-col gap-3.5 lg:w-[300px]">
           <button
             type="button"
             className="flex w-full items-center justify-center gap-[9px] rounded-[14px] bg-foreground p-[13px] text-[15px] font-extrabold text-white"

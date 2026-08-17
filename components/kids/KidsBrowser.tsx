@@ -47,7 +47,7 @@ export function KidsBrowser({ kids }: { kids: Kid[] }) {
       </div>
 
       {filteredKids.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
           {filteredKids.map((kid) => (
             <KidCard key={kid.id} kid={kid} ageLabel={getAgeLabel(kid.birthDate)} />
           ))}

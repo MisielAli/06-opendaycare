@@ -4,7 +4,7 @@ import { KidsBrowser } from "@/components/kids/KidsBrowser";
 export default function KidsPage() {
   return (
     <div className="mx-auto w-full max-w-[880px] px-6 pb-20 pt-16 md:px-10 md:pt-[34px]">
-      <div className="mb-[22px] flex items-end justify-between gap-4">
+      <div className="mb-[22px] flex flex-col items-start gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="mb-1 text-[12.5px] font-extrabold tracking-[0.8px] text-primary">
             GESTIÓN
