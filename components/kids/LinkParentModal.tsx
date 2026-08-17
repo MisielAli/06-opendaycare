@@ -44,7 +44,7 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      opener?.focus();
+      window.requestAnimationFrame(() => opener?.focus());
     };
   }, [openerRef]);
 
