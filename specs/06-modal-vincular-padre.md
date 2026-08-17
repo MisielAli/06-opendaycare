@@ -1,6 +1,6 @@
 # Spec 06 — Modal Vincular padre en perfil de niño
 
-> **Estado:** Aprovado
+> **Estado:** Implementado
 > **Depende de:** SPEC 02
 > **Fecha:** 2026-08-17
 
