@@ -15,6 +15,7 @@ interface StaffContextValue {
   kids: Kid[];
   temporaryKids: TempKid[];
   temporaryPosts: Post[];
+  lastPublishedPostId: string | null;
   isComposerOpen: boolean;
   openComposer: () => void;
   closeComposer: () => void;
@@ -31,6 +32,7 @@ interface StaffProviderProps {
 export function StaffProvider({ children }: StaffProviderProps) {
   const [temporaryKids, setTemporaryKids] = useState<TempKid[]>([]);
   const [temporaryPosts, setTemporaryPosts] = useState<Post[]>([]);
+  const [lastPublishedPostId, setLastPublishedPostId] = useState<string | null>(null);
   const [isComposerOpen, setIsComposerOpen] = useState(false);
   const temporaryPostsRef = useRef(temporaryPosts);
 
@@ -62,6 +64,7 @@ export function StaffProvider({ children }: StaffProviderProps) {
 
   function addTemporaryPost(post: Post) {
     setTemporaryPosts((currentPosts) => [post, ...currentPosts]);
+    setLastPublishedPostId(post.id);
   }
 
   return (
@@ -70,6 +73,7 @@ export function StaffProvider({ children }: StaffProviderProps) {
         kids: [...temporaryKids, ...kids],
         temporaryKids,
         temporaryPosts,
+        lastPublishedPostId,
         isComposerOpen,
         openComposer,
         closeComposer,

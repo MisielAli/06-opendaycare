@@ -8,11 +8,13 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   postTypeLabels,
   postTypeStyles,
   type PostAudience,
   type PostPhoto,
+  type Post,
   type PostType,
 } from "@/app/lib/posts";
 import { useStaff } from "@/components/staff/StaffProvider";
@@ -30,7 +32,8 @@ const postTypes: PostType[] = [
 type FormErrors = Partial<Record<"audience" | "type" | "content" | "photos", string>>;
 
 export function NewPostModal() {
-  const { isComposerOpen, kids, closeComposer } = useStaff();
+  const { isComposerOpen, kids, closeComposer, addTemporaryPost } = useStaff();
+  const router = useRouter();
   const [audience, setAudience] = useState<PostAudience | null>(null);
   const [type, setType] = useState<PostType | null>(null);
   const [content, setContent] = useState("");
@@ -154,6 +157,37 @@ export function NewPostModal() {
     };
 
     setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0 || !audience || !type) {
+      return;
+    }
+
+    const firstName = audience.kind === "kid" ? audience.kidName.split(/\s+/)[0] : "Toda la sala";
+    const post: Post = {
+      id: `temp-post-${crypto.randomUUID()}`,
+      type,
+      authorName: firstName,
+      avatarInitial: audience.kind === "kid" ? firstName.charAt(0) : undefined,
+      postedAtLabel: new Intl.DateTimeFormat("es-AR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(new Date()),
+      audienceLabel: audience.kind === "kid" ? `familia de ${firstName}` : "toda la sala",
+      content: content.trim(),
+      photos,
+      likeCount: 0,
+      commentCount: 0,
+    };
+
+    addTemporaryPost(post);
+    setAudience(null);
+    setType(null);
+    setContent("");
+    setPhotos([]);
+    setErrors({});
+    setFileErrors([]);
+    closeComposer();
+    router.push("/");
   }
 
   function removePhoto(photoId: string) {
