@@ -95,7 +95,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
             </svg>
             Resumen del día
           </button>
-          <ParentsPanel parents={kid.parents} />
+          <ParentsPanel kidName={kid.name} parents={kid.parents} />
         </div>
       </div>
     </div>
