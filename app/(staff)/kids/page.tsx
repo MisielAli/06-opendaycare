@@ -18,7 +18,7 @@ export default function KidsPage() {
 
   function closeModal() {
     setIsModalOpen(false);
-    addButtonRef.current?.focus();
+    window.setTimeout(() => addButtonRef.current?.focus(), 0);
   }
 
   function handleSave(values: AddKidFormValues) {
