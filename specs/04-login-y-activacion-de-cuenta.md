@@ -108,29 +108,29 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] `/login` renderiza sin el sidebar de staff y reproduce la estructura, tipografía, colores y espaciado de `references/pantallas/login.dc.html`
-- [ ] `/login` no muestra "INGRESO COMO", "Personal", "Familia" ni ningún selector de rol
-- [ ] En escritorio, `/login` muestra el panel coral con la marca OpenDayCare, el mensaje principal y "Guardería Sala Soles"
-- [ ] En un viewport de `390x844`, el panel coral está oculto y el formulario de login cabe en pantalla sin scroll horizontal
-- [ ] El email del login inicia con `caro@opendaycare.com` y la contraseña inicia vacía
-- [ ] Enviar el login con email vacío o inválido, o con contraseña vacía, mantiene al usuario en `/login` y muestra el error correspondiente debajo de cada campo inválido
-- [ ] Enviar el login con un email válido y una contraseña no vacía navega a `/` sin recargar el documento completo
-- [ ] "¿Olvidaste tu contraseña?" se muestra como botón y no navega ni modifica la URL
-- [ ] "Activá tu cuenta" usa `Link` y navega de `/login` a `/activate-account`
-- [ ] `/activate-account` reproduce la estructura, tipografía, colores, espaciado y textos de `references/pantallas/activar-cuenta.dc.html`
-- [ ] La tarjeta de invitación muestra la inicial `M`, Mateo y Sala Soles
-- [ ] El formulario de activación inicia con código `7K4P9`, email `lucia.fernandez@gmail.com`, contraseña mock y consentimiento marcado
-- [ ] Código, email, contraseña y consentimiento se pueden modificar localmente
-- [ ] Enviar la activación con código vacío, email vacío o inválido, contraseña vacía o consentimiento desmarcado mantiene al usuario en `/activate-account` y muestra el error correspondiente junto al control inválido
-- [ ] Enviar una activación válida navega a `/login` sin guardar datos y sin recargar el documento completo
-- [ ] "Iniciar sesión" usa `Link` y navega de `/activate-account` a `/login`
-- [ ] En un viewport de `390x844`, la activación conserva su jerarquía visual, todos los controles son visibles y no existe scroll horizontal
-- [ ] Todos los campos tienen una etiqueta asociada; los errores se relacionan mediante atributos accesibles y los controles interactivos muestran foco visible
-- [ ] Ambos formularios se pueden completar y enviar usando únicamente el teclado
-- [ ] Las capturas de `/login` y `/activate-account` en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con las referencias
-- [ ] La consola del navegador no muestra errores al cargar, validar o navegar desde las dos pantallas
-- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores
-- [ ] La implementación no usa base de datos, API, Server Actions, almacenamiento local, cookies ni autenticación real
+- [x] `/login` renderiza sin el sidebar de staff y reproduce la estructura, tipografía, colores y espaciado de `references/pantallas/login.dc.html`
+- [x] `/login` no muestra "INGRESO COMO", "Personal", "Familia" ni ningún selector de rol
+- [x] En escritorio, `/login` muestra el panel coral con la marca OpenDayCare, el mensaje principal y "Guardería Sala Soles"
+- [x] En un viewport de `390x844`, el panel coral está oculto y el formulario de login cabe en pantalla sin scroll horizontal
+- [x] El email del login inicia con `caro@opendaycare.com` y la contraseña inicia vacía
+- [x] Enviar el login con email vacío o inválido, o con contraseña vacía, mantiene al usuario en `/login` y muestra el error correspondiente debajo de cada campo inválido
+- [x] Enviar el login con un email válido y una contraseña no vacía navega a `/` sin recargar el documento completo
+- [x] "¿Olvidaste tu contraseña?" se muestra como botón y no navega ni modifica la URL
+- [x] "Activá tu cuenta" usa `Link` y navega de `/login` a `/activate-account`
+- [x] `/activate-account` reproduce la estructura, tipografía, colores, espaciado y textos de `references/pantallas/activar-cuenta.dc.html`
+- [x] La tarjeta de invitación muestra la inicial `M`, Mateo y Sala Soles
+- [x] El formulario de activación inicia con código `7K4P9`, email `lucia.fernandez@gmail.com`, contraseña mock y consentimiento marcado
+- [x] Código, email, contraseña y consentimiento se pueden modificar localmente
+- [x] Enviar la activación con código vacío, email vacío o inválido, contraseña vacía o consentimiento desmarcado mantiene al usuario en `/activate-account` y muestra el error correspondiente junto al control inválido
+- [x] Enviar una activación válida navega a `/login` sin guardar datos y sin recargar el documento completo
+- [x] "Iniciar sesión" usa `Link` y navega de `/activate-account` a `/login`
+- [x] En un viewport de `390x844`, la activación conserva su jerarquía visual, todos los controles son visibles y no existe scroll horizontal
+- [x] Todos los campos tienen una etiqueta asociada; los errores se relacionan mediante atributos accesibles y los controles interactivos muestran foco visible
+- [x] Ambos formularios se pueden completar y enviar usando únicamente el teclado
+- [x] Las capturas de `/login` y `/activate-account` en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con las referencias
+- [x] La consola del navegador no muestra errores al cargar, validar o navegar desde las dos pantallas
+- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores
+- [x] La implementación no usa base de datos, API, Server Actions, almacenamiento local, cookies ni autenticación real
 
 ## Decisiones tomadas y descartadas
 
