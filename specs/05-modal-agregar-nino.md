@@ -127,32 +127,32 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [x] El botón `+ Agregar niño` en `/kids` abre un overlay centrado y bloquea la interacción con el fondo.
-- [x] El modal muestra exactamente los campos Nombre completo, Fecha de nacimiento, Sala, Alergias y Notas médicas.
-- [x] El modal abre con el foco en Nombre completo y mantiene el foco dentro del diálogo.
-- [x] Escape, Cancelar y clic en el fondo oscurecido cierran el modal y devuelven el foco al botón que lo abrió.
-- [x] Sala inicia sin selección y muestra un estado requerido hasta que el usuario elija Soles, Luna o Estrellas.
-- [x] La máscara de fecha muestra siempre el formato `dd/mm/aaaa`.
-- [x] No se acepta una fecha vacía, incompleta, inexistente ni futura.
-- [x] El formulario solo valida al pulsar Guardar.
-- [x] Cada campo obligatorio sin valor válido muestra un mensaje de error directamente debajo del control.
-- [x] Al corregir un campo con error, el mensaje correspondiente desaparece.
-- [x] Guardar con formulario válido cierra el modal y agrega el niño nuevo a la lista.
-- [x] El niño nuevo aparece primero dentro de la sección de su sala.
-- [x] La lista muestra secciones SALA SOLES, SALA LUNA y SALA ESTRELLAS con conteos dinámicos.
-- [x] Las secciones de salas vacías no se renderizan.
-- [x] La tarjeta del niño nuevo conserva el mismo estilo que las tarjetas existentes.
-- [x] La tarjeta del niño nuevo no navega a `/kids/[id]`.
-- [x] La tarjeta muestra badge de alergias normalizado si el usuario ingresó al menos una alergia.
-- [x] La tarjeta muestra `ingreso ago 2026` u otro mes actual según la fecha de alta.
-- [x] La tarjeta muestra `0 padres vinculados`.
-- [x] Si el usuario tenía un filtro activo, Guardar lo limpia y deja visible al niño nuevo.
-- [x] Los homónimos se aceptan sin validación de duplicados.
-- [x] El formulario permite completar todos los campos usando solo el teclado.
-- [x] El modal se mantiene usable en viewports angostos sin desbordes horizontales.
-- [x] La consola del navegador no muestra errores al abrir, validar, guardar o cerrar el modal.
-- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
-- [x] La implementación no guarda datos en base de datos, API, almacenamiento local ni cookies.
+- [ ] El botón `+ Agregar niño` en `/kids` abre un overlay centrado y bloquea la interacción con el fondo.
+- [ ] El modal muestra exactamente los campos Nombre completo, Fecha de nacimiento, Sala, Alergias y Notas médicas.
+- [ ] El modal abre con el foco en Nombre completo y mantiene el foco dentro del diálogo.
+- [ ] Escape, Cancelar y clic en el fondo oscurecido cierran el modal y devuelven el foco al botón que lo abrió.
+- [ ] Sala inicia sin selección y muestra un estado requerido hasta que el usuario elija Soles, Luna o Estrellas.
+- [ ] La máscara de fecha muestra siempre el formato `dd/mm/aaaa`.
+- [ ] No se acepta una fecha vacía, incompleta, inexistente ni futura.
+- [ ] El formulario solo valida al pulsar Guardar.
+- [ ] Cada campo obligatorio sin valor válido muestra un mensaje de error directamente debajo del control.
+- [ ] Al corregir un campo con error, el mensaje correspondiente desaparece.
+- [ ] Guardar con formulario válido cierra el modal y agrega el niño nuevo a la lista.
+- [ ] El niño nuevo aparece primero dentro de la sección de su sala.
+- [ ] La lista muestra secciones SALA SOLES, SALA LUNA y SALA ESTRELLAS con conteos dinámicos.
+- [ ] Las secciones de salas vacías no se renderizan.
+- [ ] La tarjeta del niño nuevo conserva el mismo estilo que las tarjetas existentes.
+- [ ] La tarjeta del niño nuevo no navega a `/kids/[id]`.
+- [ ] La tarjeta muestra badge de alergias normalizado si el usuario ingresó al menos una alergia.
+- [ ] La tarjeta muestra `ingreso ago 2026` u otro mes actual según la fecha de alta.
+- [ ] La tarjeta muestra `0 padres vinculados`.
+- [ ] Si el usuario tenía un filtro activo, Guardar lo limpia y deja visible al niño nuevo.
+- [ ] Los homónimos se aceptan sin validación de duplicados.
+- [ ] El formulario permite completar todos los campos usando solo el teclado.
+- [ ] El modal se mantiene usable en viewports angostos sin desbordes horizontales.
+- [ ] La consola del navegador no muestra errores al abrir, validar, guardar o cerrar el modal.
+- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
+- [ ] La implementación no guarda datos en base de datos, API, almacenamiento local ni cookies.
 
 ## Decisiones tomadas y descartadas
 
