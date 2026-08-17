@@ -53,9 +53,11 @@ body {
   font-family: var(--font-sans);
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+@layer base {
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 ::-webkit-scrollbar {
