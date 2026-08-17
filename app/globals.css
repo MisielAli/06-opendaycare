@@ -5,6 +5,8 @@
   --color-background: #f6ecdf;
   --color-foreground: #3f362e;
   --color-card: #fffdf9;
+  --color-auth-background: #fbf4ec;
+  --color-auth-input-border: #eadfd0;
 
   /* Borders and dividers */
   --color-border-soft: #ece0d0;
