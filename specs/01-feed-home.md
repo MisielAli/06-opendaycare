@@ -1,6 +1,6 @@
 # Spec 01 — Feed como Home (estático)
 
-**Estado:** Aprovado
+**Estado:** Implementado
 **Depende de:** —
 **Fecha:** 2026-08-16
 
@@ -97,16 +97,16 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] `/` renderiza sidebar + feed visualmente idénticos al mockup (colores, tipografías, tamaños y espaciados)
-- [ ] El ítem "Feed" del nav aparece activo (fondo `#FBE3D8`, texto `#D9583C`)
-- [ ] Los 3 posts muestran sus badges LOGRO/ACTIVIDAD/ANUNCIO y contadores 3/1, 5/2, 8/0
-- [ ] El post de actividad muestra el placeholder de foto con borde dashed
-- [ ] Las fuentes cargan vía `next/font` (sin `<link>` a Google Fonts en el HTML)
-- [ ] En viewport angosto el sidebar se oculta y la hamburguesa lo abre/cierra
-- [ ] Existe la estructura `components/{shared,sidebar,feed}/` según la sección "Estructura de componentes"
-- [ ] `npm run lint` y `npx tsc --noEmit` pasan sin errores
-- [ ] No hay base de datos ni llamadas a API en el código
-- [ ] Identificadores, tipos y funciones en inglés; todo texto visible al usuario en español (badges "LOGRO/ACTIVIDAD/ANUNCIO", posts, nav)
+- [x] `/` renderiza sidebar + feed visualmente idénticos al mockup (colores, tipografías, tamaños y espaciados)
+- [x] El ítem "Feed" del nav aparece activo (fondo `#FBE3D8`, texto `#D9583C`)
+- [x] Los 3 posts muestran sus badges LOGRO/ACTIVIDAD/ANUNCIO y contadores 3/1, 5/2, 8/0
+- [x] El post de actividad muestra el placeholder de foto con borde dashed
+- [x] Las fuentes cargan vía `next/font` (sin `<link>` a Google Fonts en el HTML)
+- [x] En viewport angosto el sidebar se oculta y la hamburguesa lo abre/cierra
+- [x] Existe la estructura `components/{shared,sidebar,feed}/` según la sección "Estructura de componentes"
+- [x] `npm run lint` y `npx tsc --noEmit` pasan sin errores
+- [x] No hay base de datos ni llamadas a API en el código
+- [x] Identificadores, tipos y funciones en inglés; todo texto visible al usuario en español (badges "LOGRO/ACTIVIDAD/ANUNCIO", posts, nav)
 
 ## Decisiones tomadas y descartadas
 

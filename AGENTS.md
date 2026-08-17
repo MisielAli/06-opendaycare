@@ -27,12 +27,17 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Spec workflow
 
 - Large features go through the `/spec` → `/spec-impl` skills in `.agents/skills/` before coding
-- Specs live in `specs/NN-slug.md` (folder may not exist yet for spec 01); `/spec-impl` requires state `Approved` and creates a `spec-NN-slug` branch
+- Specs live in `specs/NN-slug.md`; `/spec-impl` requires state `Approved` and creates a `spec-NN-slug` branch
+- When a spec is already implemented, use `/spec-verifier specs/NN-slug.md` to validate acceptance criteria, capture screenshots and mark the spec as done
+
+## Implemented specs
+
+- `specs/01-feed-home.md` — Feed as home `/`, static data, sidebar, responsive
 
 ## MCPs
 
 - Playwright Screenshots y cualquier cosa relacionada a Playwright tienen que estar en la carpeta .playwright-mcp
-- Context7 Usartemos este MCP para traer la documentacion actualizada del Framework
+- Context7: usaremos este MCP para traer la documentación actualizada del Framework
 
 
 ## Reglas de codigo
