@@ -8,7 +8,7 @@ export type PostType =
   | "announcement";
 
 export type PostAudience =
-  | { kind: "kid"; kidId: string; kidName: string }
+  | { kind: "kids"; kids: { id: string; name: string }[] }
   | { kind: "room" };
 
 export interface PostPhoto {

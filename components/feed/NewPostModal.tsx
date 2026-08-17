@@ -88,8 +88,21 @@ export function NewPostModal() {
     });
   }
 
-  function selectAudience(nextAudience: PostAudience) {
-    setAudience(nextAudience);
+  function toggleKidAudience(kidId: string, kidName: string) {
+    setAudience((currentAudience) => {
+      const selectedKids = currentAudience?.kind === "kids" ? currentAudience.kids : [];
+      const isSelected = selectedKids.some((kid) => kid.id === kidId);
+      const nextKids = isSelected
+        ? selectedKids.filter((kid) => kid.id !== kidId)
+        : [...selectedKids, { id: kidId, name: kidName }];
+
+      return nextKids.length > 0 ? { kind: "kids", kids: nextKids } : null;
+    });
+    clearError("audience");
+  }
+
+  function selectRoomAudience() {
+    setAudience({ kind: "room" });
     clearError("audience");
   }
 
@@ -161,18 +174,25 @@ export function NewPostModal() {
       return;
     }
 
-    const firstName = audience.kind === "kid" ? audience.kidName.split(/\s+/)[0] : "Toda la sala";
+    const audienceNames = audience.kind === "kids" ? audience.kids.map((kid) => kid.name) : [];
+    const audienceLabel =
+      audience.kind === "room"
+        ? "toda la sala"
+        : audienceNames.length === 1
+          ? `familia de ${audienceNames[0].split(/\s+/)[0]}`
+          : `familias de ${new Intl.ListFormat("es-AR", { style: "long", type: "conjunction" }).format(audienceNames)}`;
+    const authorName = audience.kind === "room" ? "Toda la sala" : audienceNames.map((name) => name.split(/\s+/)[0]).join(", ");
     const post: Post = {
       id: `temp-post-${crypto.randomUUID()}`,
       type,
-      authorName: firstName,
-      avatarInitial: audience.kind === "kid" ? firstName.charAt(0) : undefined,
+      authorName,
+      avatarInitial: audienceNames.length === 1 ? authorName.charAt(0) : undefined,
       postedAtLabel: new Intl.DateTimeFormat("es-AR", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
       }).format(new Date()),
-      audienceLabel: audience.kind === "kid" ? `familia de ${firstName}` : "toda la sala",
+      audienceLabel,
       content: content.trim(),
       photos,
       likeCount: 0,
@@ -290,10 +310,10 @@ export function NewPostModal() {
                     key={kid.id}
                     ref={kid.id === kids[0]?.id ? firstAudienceRef : undefined}
                     type="button"
-                    aria-pressed={audience?.kind === "kid" && audience.kidId === kid.id}
-                    onClick={() => selectAudience({ kind: "kid", kidId: kid.id, kidName: kid.name })}
+                    aria-pressed={audience?.kind === "kids" && audience.kids.some((selectedKid) => selectedKid.id === kid.id)}
+                    onClick={() => toggleKidAudience(kid.id, kid.name)}
                     className={`flex items-center gap-2 rounded-full border-[1.5px] py-1.5 pr-3.5 pl-1.5 text-[14px] font-bold ${
-                      audience?.kind === "kid" && audience.kidId === kid.id
+                      audience?.kind === "kids" && audience.kids.some((selectedKid) => selectedKid.id === kid.id)
                         ? "border-foreground bg-foreground text-white"
                         : "border-border-soft bg-card text-nav-text"
                     }`}
@@ -310,7 +330,7 @@ export function NewPostModal() {
                 <button
                   type="button"
                   aria-pressed={audience?.kind === "room"}
-                  onClick={() => selectAudience({ kind: "room" })}
+                  onClick={selectRoomAudience}
                   className={`rounded-full border-[1.5px] px-4 py-1.5 text-[14px] font-bold ${
                     audience?.kind === "room"
                       ? "border-foreground bg-foreground text-white"
