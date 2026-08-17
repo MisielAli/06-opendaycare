@@ -102,31 +102,31 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] `Vincular otro padre` abre el modal desde cada perfil existente en `/kids/[id]`.
-- [ ] El subtítulo del modal muestra el nombre del niño del perfil abierto.
-- [ ] El modal reproduce la jerarquía visual, tipografía, colores y espaciado de `references/pantallas/vincular-padre.dc.html`.
-- [ ] El modal muestra los campos Nombre del padre/madre, Email y Parentesco.
-- [ ] Las opciones de parentesco son Mamá, Papá y Tutor/a, y Mamá aparece seleccionada inicialmente.
-- [ ] El modal muestra el código `7K4P9` y el texto `Vence en 7 días` como contenido estático.
-- [ ] El foco inicial se sitúa en el campo Nombre del padre/madre.
-- [ ] El foco no puede salir del diálogo mientras este está abierto.
-- [ ] X, Escape y clic en el fondo cierran el modal y devuelven el foco al botón que lo abrió.
-- [ ] El scroll del documento se bloquea mientras el modal está abierto y se restaura al cerrarlo.
-- [ ] Enviar con nombre vacío, email vacío o inválido, o parentesco no válido mantiene abierto el modal y muestra el error correspondiente debajo del control.
-- [ ] Corregir un campo inválido elimina su mensaje de error.
-- [ ] Enviar con valores válidos cierra el modal y agrega una fila nueva al panel de padres vinculados.
-- [ ] La fila creada muestra el nombre ingresado, el parentesco seleccionado, el detalle `invitación enviada` y el badge `PENDIENTE`.
-- [ ] La fila creada usa el avatar `#A9C7E8` y se muestra antes de `Vincular otro padre`.
-- [ ] Reabrir el modal muestra nombre y email vacíos, Mamá seleccionada y el código `7K4P9`.
-- [ ] Se permiten múltiples invitaciones con el mismo nombre o email.
-- [ ] El email ingresado no se muestra ni se guarda en el panel de vínculos.
-- [ ] Un vínculo temporal desaparece al recargar la página o abandonar el perfil.
-- [ ] El modal no produce desbordes horizontales en `390x844`.
-- [ ] Todos los controles del modal se pueden operar solo con teclado y presentan foco visible.
-- [ ] Las capturas de `/kids/0001` con el modal en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con la referencia.
-- [ ] La consola no muestra errores al abrir, validar, enviar o cerrar el modal.
-- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
-- [ ] La implementación no realiza llamadas de red ni agrega persistencia local.
+- [x] `Vincular otro padre` abre el modal desde cada perfil existente en `/kids/[id]`.
+- [x] El subtítulo del modal muestra el nombre del niño del perfil abierto.
+- [x] El modal reproduce la jerarquía visual, tipografía, colores y espaciado de `references/pantallas/vincular-padre.dc.html`.
+- [x] El modal muestra los campos Nombre del padre/madre, Email y Parentesco.
+- [x] Las opciones de parentesco son Mamá, Papá y Tutor/a, y Mamá aparece seleccionada inicialmente.
+- [x] El modal muestra el código `7K4P9` y el texto `Vence en 7 días` como contenido estático.
+- [x] El foco inicial se sitúa en el campo Nombre del padre/madre.
+- [x] El foco no puede salir del diálogo mientras este está abierto.
+- [x] X, Escape y clic en el fondo cierran el modal y devuelven el foco al botón que lo abrió.
+- [x] El scroll del documento se bloquea mientras el modal está abierto y se restaura al cerrarlo.
+- [x] Enviar con nombre vacío, email vacío o inválido, o parentesco no válido mantiene abierto el modal y muestra el error correspondiente debajo del control.
+- [x] Corregir un campo inválido elimina su mensaje de error.
+- [x] Enviar con valores válidos cierra el modal y agrega una fila nueva al panel de padres vinculados.
+- [x] La fila creada muestra el nombre ingresado, el parentesco seleccionado, el detalle `invitación enviada` y el badge `PENDIENTE`.
+- [x] La fila creada usa el avatar `#A9C7E8` y se muestra antes de `Vincular otro padre`.
+- [x] Reabrir el modal muestra nombre y email vacíos, Mamá seleccionada y el código `7K4P9`.
+- [x] Se permiten múltiples invitaciones con el mismo nombre o email.
+- [x] El email ingresado no se muestra ni se guarda en el panel de vínculos.
+- [x] Un vínculo temporal desaparece al recargar la página o abandonar el perfil.
+- [x] El modal no produce desbordes horizontales en `390x844`.
+- [x] Todos los controles del modal se pueden operar solo con teclado y presentan foco visible.
+- [x] Las capturas de `/kids/0001` con el modal en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con la referencia.
+- [x] La consola no muestra errores al abrir, validar, enviar o cerrar el modal.
+- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
+- [x] La implementación no realiza llamadas de red ni agrega persistencia local.
 
 ## Decisiones tomadas y descartadas
 

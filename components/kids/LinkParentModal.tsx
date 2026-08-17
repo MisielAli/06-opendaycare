@@ -40,9 +40,12 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
     const previousOverflow = document.body.style.overflow;
     const opener = openerRef.current;
     document.body.style.overflow = "hidden";
-    nameInputRef.current?.focus();
+    const focusFrame = window.requestAnimationFrame(() => {
+      nameInputRef.current?.focus();
+    });
 
     return () => {
+      window.cancelAnimationFrame(focusFrame);
       document.body.style.overflow = previousOverflow;
       window.requestAnimationFrame(() => opener?.focus());
     };
