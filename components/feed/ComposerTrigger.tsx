@@ -1,10 +1,16 @@
+"use client";
+
 import { Avatar } from "@/components/shared/Avatar";
 import { feedTexts } from "@/app/lib/feed";
+import { useStaff } from "@/components/staff/StaffProvider";
 
 export function ComposerTrigger() {
+  const { openComposer } = useStaff();
+
   return (
     <button
       type="button"
+      onClick={openComposer}
       className="mb-6 flex items-center gap-3.5 rounded-[18px] border border-border-soft bg-card px-[18px] py-3.5 shadow-[0_4px_14px_-10px_rgba(120,90,60,.4)]"
     >
       <Avatar variant="warm" initial="C" size={40} />
