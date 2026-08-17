@@ -1,4 +1,5 @@
 import { navItems } from "@/app/lib/navigation";
+import { usePathname } from "next/navigation";
 
 const navIcons: Record<string, React.ReactNode> = {
   feed: (
@@ -63,10 +64,15 @@ const navIcons: Record<string, React.ReactNode> = {
 };
 
 export function SidebarNav() {
+  const pathname = usePathname();
+
   return (
     <nav className="flex flex-1 flex-col gap-1">
       {navItems.map((item) => {
-        const isActive = item.id === "feed";
+        const isActive =
+          item.href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(`${item.href}/`) || pathname === item.href;
         return (
           <a
             key={item.id}
