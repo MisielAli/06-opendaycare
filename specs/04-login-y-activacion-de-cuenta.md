@@ -1,6 +1,6 @@
 # Spec 04 — Login y activación de cuenta (mock)
 
-**Estado:** Aprovado
+**Estado:** Implementado
 **Depende de:** SPEC 01
 **Fecha:** 2026-08-17
 
