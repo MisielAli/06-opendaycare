@@ -1,4 +1,5 @@
 import { navItems } from "@/app/lib/navigation";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navIcons: Record<string, React.ReactNode> = {
@@ -72,21 +73,37 @@ export function SidebarNav() {
         const isActive =
           item.href === "/"
             ? pathname === "/"
-            : pathname.startsWith(`${item.href}/`) || pathname === item.href;
+            : item.href !== undefined &&
+              (pathname.startsWith(`${item.href}/`) || pathname === item.href);
+        const sharedClass = `flex items-center gap-3 rounded-xl px-3 py-[11px] text-[14.5px] ${
+          isActive
+            ? "bg-highlight font-extrabold text-primary"
+            : "font-semibold text-nav-text"
+        }`;
+
+        if (item.href) {
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              aria-current={isActive ? "page" : undefined}
+              className={sharedClass}
+            >
+              {navIcons[item.id]}
+              {item.label}
+            </Link>
+          );
+        }
+
         return (
-          <a
+          <button
             key={item.id}
-            href={item.href}
-            aria-current={isActive ? "page" : undefined}
-            className={`flex items-center gap-3 rounded-xl px-3 py-[11px] text-[14.5px] ${
-              isActive
-                ? "bg-highlight font-extrabold text-primary"
-                : "font-semibold text-nav-text"
-            }`}
+            type="button"
+            className={sharedClass}
           >
             {navIcons[item.id]}
             {item.label}
-          </a>
+          </button>
         );
       })}
     </nav>

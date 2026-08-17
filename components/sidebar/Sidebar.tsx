@@ -64,8 +64,8 @@ export function Sidebar() {
         }`}
       >
         <div className="flex items-start pb-[22px]">
-          <a
-            href="#"
+          <button
+            type="button"
             className="flex flex-1 items-center gap-[11px] px-2 pt-1"
           >
             <div className="flex h-[38px] w-[38px] flex-none items-center justify-center rounded-[12px] bg-gradient-to-br from-[#F8C3A8] to-[#F2937A]">
@@ -79,7 +79,7 @@ export function Sidebar() {
                 {sidebarTexts.roomName}
               </div>
             </div>
-          </a>
+          </button>
           <button
             type="button"
             aria-label="Cerrar menú"
@@ -101,8 +101,8 @@ export function Sidebar() {
           </button>
         </div>
 
-        <a
-          href="#"
+        <button
+          type="button"
           className="mb-[18px] flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] p-3 text-[14.5px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,.75)]"
         >
           <svg
@@ -118,7 +118,7 @@ export function Sidebar() {
             <path d="M12 5v14M5 12h14" />
           </svg>
           {sidebarTexts.newPostButton}
-        </a>
+        </button>
 
         <SidebarNav />
         <SidebarUser />

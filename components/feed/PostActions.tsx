@@ -23,8 +23,8 @@ export function PostActions({ likeCount, commentCount }: PostActionsProps) {
         </svg>
         {likeCount}
       </span>
-      <a
-        href="#"
+      <button
+        type="button"
         className="flex items-center gap-[7px] text-sm font-bold text-text-muted"
       >
         <svg
@@ -40,11 +40,11 @@ export function PostActions({ likeCount, commentCount }: PostActionsProps) {
           <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z" />
         </svg>
         {commentCount}
-      </a>
+      </button>
       <span className="flex-1" />
-      <a href="#" className="text-sm font-extrabold text-primary-deep">
+      <button type="button" className="text-sm font-extrabold text-primary-deep">
         {feedTexts.editAction}
-      </a>
+      </button>
     </div>
   );
 }
