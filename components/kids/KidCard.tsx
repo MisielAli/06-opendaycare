@@ -2,10 +2,6 @@ import type { Kid } from "@/app/lib/kids";
 import Link from "next/link";
 
 function getParentsLabel(parentCount: number) {
-  if (parentCount === 0) {
-    return "sin padres vinculados";
-  }
-
   return `${parentCount} ${parentCount === 1 ? "padre vinculado" : "padres vinculados"}`;
 }
 
@@ -34,7 +30,7 @@ export function KidCard({
           {kid.name}
         </div>
         <div className="text-[13px] text-text-soft">
-          {ageLabel} · {getParentsLabel(kid.parents.length)}
+          {ageLabel} · ingreso {kid.enrollmentLabel} · {getParentsLabel(kid.parents.length)}
         </div>
       </div>
       {hasAllergy ? (
