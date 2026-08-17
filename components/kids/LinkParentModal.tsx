@@ -33,6 +33,7 @@ interface LinkParentModalProps {
 export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkParentModalProps) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof LinkParentFormValues, boolean>>>({});
   const nameInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +62,14 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
         [key]: validate(nextValues)[key],
       }));
     }
+  }
+
+  function handleBlur<Key extends keyof LinkParentFormValues>(key: Key) {
+    setTouched((prev) => ({ ...prev, [key]: true }));
+    setErrors((currentErrors) => ({
+      ...currentErrors,
+      [key]: validate(values)[key],
+    }));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -139,14 +148,14 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
 
             <div className="mb-[18px]">
               <FieldLabel label="Nombre del padre/madre" htmlFor="parent-full-name" />
-              <input ref={nameInputRef} id="parent-full-name" value={values.fullName} onChange={(event) => updateValue("fullName", event.target.value)} aria-invalid={Boolean(errors.fullName)} aria-describedby={errors.fullName ? "parent-full-name-error" : undefined} placeholder="Ej. Diego Fernández" className={inputClassName(errors.fullName)} />
-              <FieldError id="parent-full-name-error" message={errors.fullName} />
+              <input ref={nameInputRef} id="parent-full-name" value={values.fullName} onChange={(event) => updateValue("fullName", event.target.value)} onBlur={() => handleBlur("fullName")} aria-invalid={Boolean(touched.fullName && errors.fullName)} aria-describedby={touched.fullName && errors.fullName ? "parent-full-name-error" : undefined} placeholder="Ej. Diego Fernández" className={inputClassName(touched.fullName ? errors.fullName : undefined)} />
+              <FieldError id="parent-full-name-error" message={touched.fullName ? errors.fullName : undefined} />
             </div>
 
             <div className="mb-[18px]">
               <FieldLabel label="Email" htmlFor="parent-email" />
-              <input id="parent-email" type="email" value={values.email} onChange={(event) => updateValue("email", event.target.value)} aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "parent-email-error" : undefined} placeholder="correo@ejemplo.com" className={inputClassName(errors.email)} />
-              <FieldError id="parent-email-error" message={errors.email} />
+              <input id="parent-email" type="email" value={values.email} onChange={(event) => updateValue("email", event.target.value)} onBlur={() => handleBlur("email")} aria-invalid={Boolean(touched.email && errors.email)} aria-describedby={touched.email && errors.email ? "parent-email-error" : undefined} placeholder="correo@ejemplo.com" className={inputClassName(touched.email ? errors.email : undefined)} />
+              <FieldError id="parent-email-error" message={touched.email ? errors.email : undefined} />
             </div>
 
             <fieldset className="mb-5" aria-describedby={errors.roleLabel ? "parent-role-error" : undefined}>
@@ -167,7 +176,7 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
               <div className="mt-1.5 text-[13px] text-[#A88526]">Vence en 7 días</div>
             </div>
 
-            <button type="submit" className="flex w-full items-center justify-center gap-[9px] rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] px-4 py-[14px] text-[15.5px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] focus-visible:outline-2 focus-visible:outline-primary">
+            <button type="submit" className="flex w-full items-center justify-center gap-[9px] rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] px-4 py-[14px] text-[15.5px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] transition-all duration-200 hover:from-[#F5A48D] hover:to-[#EF8E75] hover:shadow-[0_14px_28px_-6px_rgba(238,129,100,.8)] hover:brightness-105 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-primary">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z" /><path d="M22 2 11 13" /></svg>
               Enviar invitación
             </button>

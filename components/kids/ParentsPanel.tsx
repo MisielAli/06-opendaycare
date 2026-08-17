@@ -65,9 +65,9 @@ export function ParentsPanel({ kidName, parents }: { kidName: string; parents: P
           ref={openerRef}
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-3 pt-2 text-left"
+          className="group flex items-center gap-3 pt-2 text-left transition-opacity duration-150 hover:opacity-80"
         >
-          <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#D8CBBA] text-[#B0A290]">
+          <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#D8CBBA] text-[#B0A290] transition-colors duration-150 group-hover:border-primary group-hover:text-primary">
             <svg
               width="18"
               height="18"
@@ -82,7 +82,7 @@ export function ParentsPanel({ kidName, parents }: { kidName: string; parents: P
               <path d="M12 5v14M5 12h14" />
             </svg>
           </span>
-          <span className="text-[14.5px] font-extrabold text-primary-deep">
+          <span className="text-[14.5px] font-extrabold text-primary-deep transition-colors duration-150 group-hover:text-primary">
             Vincular otro padre
           </span>
         </button>
