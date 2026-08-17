@@ -4,15 +4,15 @@ import { useRef, useState } from "react";
 import {
   fallbackAvatar,
   getEnrollmentLabel,
-  kids,
   type AddKidFormValues,
   type TempKid,
 } from "@/app/lib/kids";
 import { AddKidModal } from "@/components/kids/AddKidModal";
 import { KidsBrowser } from "@/components/kids/KidsBrowser";
+import { useStaff } from "@/components/staff/StaffProvider";
 
 export default function KidsPage() {
-  const [temporaryKids, setTemporaryKids] = useState<TempKid[]>([]);
+  const { kids, temporaryKids, addTemporaryKid } = useStaff();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -38,7 +38,7 @@ export default function KidsPage() {
       createdAt,
     };
 
-    setTemporaryKids((currentKids) => [newKid, ...currentKids]);
+    addTemporaryKid(newKid);
     closeModal();
   }
 
@@ -66,7 +66,7 @@ export default function KidsPage() {
         </button>
       </div>
 
-      <KidsBrowser kids={[...temporaryKids, ...kids]} latestAddedKidId={temporaryKids[0]?.id} />
+      <KidsBrowser kids={kids} latestAddedKidId={temporaryKids[0]?.id} />
       {isModalOpen ? <AddKidModal onClose={closeModal} onSave={handleSave} /> : null}
     </div>
   );

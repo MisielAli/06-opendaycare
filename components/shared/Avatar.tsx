@@ -1,4 +1,11 @@
-type AvatarVariant = "warm" | "blue" | "indigo";
+type AvatarVariant =
+  | "warm"
+  | "blue"
+  | "indigo"
+  | "meal"
+  | "nap"
+  | "mood"
+  | "photo";
 
 interface AvatarProps {
   variant?: AvatarVariant;
@@ -10,6 +17,10 @@ const variantClasses: Record<AvatarVariant, string> = {
   warm: "bg-avatar-warm text-white",
   blue: "bg-avatar-blue-bg text-avatar-blue-fg",
   indigo: "bg-avatar-indigo-bg text-avatar-indigo-fg",
+  meal: "bg-[#F4DC8E] text-[#9A7B1E]",
+  nap: "bg-[#C9B6E8] text-[#7B5FC0]",
+  mood: "bg-[#F4B8CC] text-[#C44A7A]",
+  photo: "bg-[#FBD8CC] text-[#D9684A]",
 };
 
 export function Avatar({ variant = "warm", initial, size = 44 }: AvatarProps) {

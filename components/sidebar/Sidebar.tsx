@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { sidebarTexts } from "@/app/lib/navigation";
+import { useStaff } from "@/components/staff/StaffProvider";
 import { SidebarNav } from "./SidebarNav";
 import { SidebarUser } from "./SidebarUser";
 
@@ -25,6 +26,12 @@ function BrandMark() {
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { openComposer } = useStaff();
+
+  function handleNewPost() {
+    setIsOpen(false);
+    openComposer();
+  }
 
   return (
     <>
@@ -103,6 +110,7 @@ export function Sidebar() {
 
         <button
           type="button"
+          onClick={handleNewPost}
           className="mb-[18px] flex w-full items-center justify-center gap-2 rounded-[14px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] p-3 text-[14.5px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,.75)]"
         >
           <svg

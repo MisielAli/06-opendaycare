@@ -1,4 +1,28 @@
-export type PostType = "achievement" | "activity" | "announcement";
+export type PostType =
+  | "meal"
+  | "nap"
+  | "activity"
+  | "achievement"
+  | "mood"
+  | "photo"
+  | "announcement";
+
+export type PostAudience =
+  | { kind: "kid"; kidId: string; kidName: string }
+  | { kind: "room" };
+
+export interface PostPhoto {
+  id: string;
+  name: string;
+  previewUrl: string;
+}
+
+export interface CreatePostFormValues {
+  audience: PostAudience | null;
+  type: PostType | null;
+  content: string;
+  photos: PostPhoto[];
+}
 
 export interface Post {
   id: string;
@@ -9,6 +33,7 @@ export interface Post {
   audienceLabel: string;
   content: string;
   photoLabel?: string;
+  photos?: PostPhoto[];
   likeCount: number;
   commentCount: number;
 }
@@ -53,9 +78,26 @@ export const posts: Post[] = [
 ];
 
 export const postTypeLabels: Record<PostType, string> = {
-  achievement: "Logro",
+  meal: "Comida",
+  nap: "Siesta",
   activity: "Actividad",
+  achievement: "Logro",
+  mood: "Ánimo",
+  photo: "Foto",
   announcement: "Anuncio",
+};
+
+export const postTypeStyles: Record<
+  PostType,
+  { backgroundColor: string; color: string }
+> = {
+  meal: { backgroundColor: "#9A7B1E", color: "#FFFFFF" },
+  nap: { backgroundColor: "#E7DCF6", color: "#7B5FC0" },
+  activity: { backgroundColor: "#C7E7F1", color: "#2E89A6" },
+  achievement: { backgroundColor: "#CFEBD8", color: "#3E9B6C" },
+  mood: { backgroundColor: "#F9D2DE", color: "#C56486" },
+  photo: { backgroundColor: "#FBD8CC", color: "#D9684A" },
+  announcement: { backgroundColor: "#CCD8F4", color: "#4E72C8" },
 };
 
 export const publishedByYouLabel = "publicado por vos";

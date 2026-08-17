@@ -1,9 +1,15 @@
+"use client";
+
 import { feedTexts } from "@/app/lib/feed";
 import { posts } from "@/app/lib/posts";
 import { ComposerTrigger } from "@/components/feed/ComposerTrigger";
 import { PostCard } from "@/components/feed/PostCard";
+import { useStaff } from "@/components/staff/StaffProvider";
 
 export default function FeedPage() {
+  const { temporaryPosts, lastPublishedPostId } = useStaff();
+  const feedPosts = [...temporaryPosts, ...posts];
+
   return (
     <div className="mx-auto w-full max-w-[760px] px-6 pb-20 md:px-10 md:pt-[34px]">
       <div className="mb-6 mt-16 md:mt-0">
@@ -28,8 +34,8 @@ export default function FeedPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {feedPosts.map((post) => (
+          <PostCard key={post.id} post={post} focusOnMount={post.id === lastPublishedPostId} />
         ))}
       </div>
     </div>
