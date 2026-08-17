@@ -1,5 +1,19 @@
 export type ParentStatus = "active" | "pending";
 
+export type RoomName = "Soles" | "Luna" | "Estrellas";
+
+export interface RoomOption {
+  name: RoomName;
+}
+
+export interface AddKidFormValues {
+  fullName: string;
+  birthDate: string;
+  room: RoomName | "";
+  allergyTags: string;
+  medicalNotes: string;
+}
+
 export interface ParentLink {
   name: string;
   roleLabel: string;
@@ -18,6 +32,29 @@ export interface Kid {
   avatarColor: string;
   avatarTextColor: string;
   parents: ParentLink[];
+}
+
+export interface TempKid extends Kid {
+  createdAt: Date;
+}
+
+export const roomOptions: RoomOption[] = [
+  { name: "Soles" },
+  { name: "Luna" },
+  { name: "Estrellas" },
+];
+
+export const fallbackAvatar = {
+  avatarColor: "#F2937A",
+  avatarTextColor: "#8B3A24",
+};
+
+export const fallbackEnrollmentDate = new Date();
+
+export function getEnrollmentLabel(date: Date): string {
+  return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
+    .format(date)
+    .replace(".", "");
 }
 
 export const kids: Kid[] = [
