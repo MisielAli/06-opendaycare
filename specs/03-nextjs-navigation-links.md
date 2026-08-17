@@ -1,6 +1,6 @@
 # Spec 03 — Navegación interna con Next.js Link
 
-**Estado:** Aprovado
+**Estado:** Implementado
 **Depende de:** SPEC 01, SPEC 02
 **Fecha:** 2026-08-17
 
@@ -45,14 +45,14 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Los ítems Feed y Niños del sidebar usan `Link` de `next/link` y navegan respectivamente a `/` y `/kids`.
-- [ ] Cada tarjeta en `/kids` usa `Link` y navega a `/kids/[id]`.
-- [ ] El enlace "Volver a Niños" del perfil usa `Link` y navega a `/kids`.
-- [ ] Ningún componente de la aplicación usa `<a href="#">` como placeholder de una acción sin destino.
-- [ ] Nueva publicación, logo, comentarios, Editar, cerrar sesión, Avisos y Mi cuenta se representan como botones cuando no exista una ruta implementada.
-- [ ] Los botones reemplazados conservan sus textos, iconos, estilos visibles y etiquetas accesibles actuales.
-- [ ] La navegación manual entre `/`, `/kids`, `/kids/0001` y el retorno a `/kids` no produce recargas completas de documento.
-- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
+- [x] Los ítems Feed y Niños del sidebar usan `Link` de `next/link` y navegan respectivamente a `/` y `/kids`.
+- [x] Cada tarjeta en `/kids` usa `Link` y navega a `/kids/[id]`.
+- [x] El enlace "Volver a Niños" del perfil usa `Link` y navega a `/kids`.
+- [x] Ningún componente de la aplicación usa `<a href="#">` como placeholder de una acción sin destino.
+- [x] Nueva publicación, logo, comentarios, Editar, cerrar sesión, Avisos y Mi cuenta se representan como botones cuando no exista una ruta implementada.
+- [x] Los botones reemplazados conservan sus textos, iconos, estilos visibles y etiquetas accesibles actuales.
+- [x] La navegación manual entre `/`, `/kids`, `/kids/0001` y el retorno a `/kids` no produce recargas completas de documento.
+- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
 
 ## Decisiones tomadas y descartadas
 
