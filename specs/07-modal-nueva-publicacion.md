@@ -151,36 +151,36 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] El botón `Nueva publicación` del sidebar abre el modal en `/`, `/kids` y `/kids/[id]`.
-- [ ] `Compartí un momento…` abre el mismo modal desde `/`.
-- [ ] El modal reproduce la jerarquía visual, las tipografías, colores y espaciados de `references/pantallas/crear-publicacion.dc.html`.
-- [ ] El modal aparece centrado sobre un overlay, bloquea la interacción y el scroll del fondo y permanece utilizable sin desborde horizontal en `390x844`.
-- [ ] Los destinatarios individuales incluyen los ocho niños estáticos por nombre completo y toda alta temporal creada desde `/kids` durante la misma sesión.
-- [ ] Los niños temporales se muestran antes de los estáticos y `Toda la sala` aparece como última opción.
-- [ ] Solo se puede seleccionar un destinatario individual o `Toda la sala` a la vez.
-- [ ] El modal ofrece Comida, Siesta, Actividad, Logro, Ánimo, Foto y Anuncio, y permite seleccionar exactamente un tipo.
-- [ ] Todo tipo se puede publicar tanto para un niño como para Toda la sala.
-- [ ] Destino, tipo y descripción son obligatorios al pulsar Publicar.
-- [ ] Una descripción vacía o formada solo por espacios muestra un error y no crea una publicación.
-- [ ] Los errores aparecen al pulsar Publicar y desaparecen al corregir su control correspondiente.
-- [ ] El selector acepta solo imágenes, como máximo cuatro archivos y como máximo 10 MB por archivo.
-- [ ] Un archivo de tipo o tamaño no permitido muestra un mensaje dentro del modal y no se agrega como preview.
-- [ ] Cada preview válido se puede eliminar antes de publicar.
-- [ ] Publicar con el tipo Foto y sin imágenes muestra un error y conserva el modal abierto.
-- [ ] Publicar otro tipo sin fotos es válido.
-- [ ] Cancelar, Escape y clic sobre el fondo cierran el modal, descartan el contenido sin pedir confirmación y devuelven el foco al activador.
-- [ ] Al abrir, el foco se sitúa en el primer destinatario y no puede salir del diálogo mientras está abierto.
-- [ ] Publicar un formulario válido desde cualquier ruta staff navega a `/` y coloca la publicación creada antes de las publicaciones estáticas.
-- [ ] Una publicación individual muestra el primer nombre del niño como encabezado y `familia de {primer nombre}` como audiencia.
-- [ ] Una publicación para sala muestra `Toda la sala` como encabezado y `toda la sala` como audiencia.
-- [ ] La tarjeta creada muestra el tipo elegido, la hora de publicación, la descripción, contadores `0` y una grilla responsive con todas las fotos seleccionadas.
-- [ ] Una foto se muestra a ancho completo y dos a cuatro fotos se muestran en una grilla compacta con texto alternativo basado en el nombre del archivo.
-- [ ] Tras publicar, el foco se sitúa en la tarjeta nueva del feed.
-- [ ] Los niños temporales y publicaciones temporales sobreviven la navegación entre rutas staff, pero desaparecen al recargar.
-- [ ] No se realizan llamadas de red ni se usa base de datos, cookies, `localStorage`, `sessionStorage` u otro almacenamiento persistente.
-- [ ] La consola no muestra errores al abrir, validar, adjuntar, eliminar, publicar o cancelar.
-- [ ] Las capturas del modal y del feed publicado en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con la referencia.
-- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
+- [x] El botón `Nueva publicación` del sidebar abre el modal en `/`, `/kids` y `/kids/[id]`.
+- [x] `Compartí un momento…` abre el mismo modal desde `/`.
+- [x] El modal reproduce la jerarquía visual, las tipografías, colores y espaciados de `references/pantallas/crear-publicacion.dc.html`.
+- [x] El modal aparece centrado sobre un overlay, bloquea la interacción y el scroll del fondo y permanece utilizable sin desborde horizontal en `390x844`.
+- [x] Los destinatarios individuales incluyen los ocho niños estáticos por nombre completo y toda alta temporal creada desde `/kids` durante la misma sesión.
+- [x] Los niños temporales se muestran antes de los estáticos y `Toda la sala` aparece como última opción.
+- [x] Solo se puede seleccionar un destinatario individual o `Toda la sala` a la vez.
+- [x] El modal ofrece Comida, Siesta, Actividad, Logro, Ánimo, Foto y Anuncio, y permite seleccionar exactamente un tipo.
+- [x] Todo tipo se puede publicar tanto para un niño como para Toda la sala.
+- [x] Destino, tipo y descripción son obligatorios al pulsar Publicar.
+- [x] Una descripción vacía o formada solo por espacios muestra un error y no crea una publicación.
+- [x] Los errores aparecen al pulsar Publicar y desaparecen al corregir su control correspondiente.
+- [x] El selector acepta solo imágenes, como máximo cuatro archivos y como máximo 10 MB por archivo.
+- [x] Un archivo de tipo o tamaño no permitido muestra un mensaje dentro del modal y no se agrega como preview.
+- [x] Cada preview válido se puede eliminar antes de publicar.
+- [x] Publicar con el tipo Foto y sin imágenes muestra un error y conserva el modal abierto.
+- [x] Publicar otro tipo sin fotos es válido.
+- [x] Cancelar, Escape y clic sobre el fondo cierran el modal, descartan el contenido sin pedir confirmación y devuelven el foco al activador.
+- [x] Al abrir, el foco se sitúa en el primer destinatario y no puede salir del diálogo mientras está abierto.
+- [x] Publicar un formulario válido desde cualquier ruta staff navega a `/` y coloca la publicación creada antes de las publicaciones estáticas.
+- [x] Una publicación individual muestra el primer nombre del niño como encabezado y `familia de {primer nombre}` como audiencia.
+- [x] Una publicación para sala muestra `Toda la sala` como encabezado y `toda la sala` como audiencia.
+- [x] La tarjeta creada muestra el tipo elegido, la hora de publicación, la descripción, contadores `0` y una grilla responsive con todas las fotos seleccionadas.
+- [x] Una foto se muestra a ancho completo y dos a cuatro fotos se muestran en una grilla compacta con texto alternativo basado en el nombre del archivo.
+- [x] Tras publicar, el foco se sitúa en la tarjeta nueva del feed.
+- [x] Los niños temporales y publicaciones temporales sobreviven la navegación entre rutas staff, pero desaparecen al recargar.
+- [x] No se realizan llamadas de red ni se usa base de datos, cookies, `localStorage`, `sessionStorage` u otro almacenamiento persistente.
+- [x] La consola no muestra errores al abrir, validar, adjuntar, eliminar, publicar o cancelar.
+- [x] Las capturas del modal y del feed publicado en `1440x900` y `390x844` se guardan en `.playwright-mcp/` y se comparan con la referencia.
+- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
 
 ## Decisiones tomadas y descartadas
 
