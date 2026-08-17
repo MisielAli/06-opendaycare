@@ -1,14 +1,14 @@
 export interface NavItem {
   id: "feed" | "children" | "notices" | "account";
   label: string;
-  href: string;
+  href?: string;
 }
 
 export const navItems: NavItem[] = [
   { id: "feed", label: "Feed", href: "/" },
   { id: "children", label: "Niños", href: "/kids" },
-  { id: "notices", label: "Avisos", href: "#" },
-  { id: "account", label: "Mi cuenta", href: "#" },
+  { id: "notices", label: "Avisos" },
+  { id: "account", label: "Mi cuenta" },
 ];
 
 export const sidebarTexts = {

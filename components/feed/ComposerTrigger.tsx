@@ -3,8 +3,8 @@ import { feedTexts } from "@/app/lib/feed";
 
 export function ComposerTrigger() {
   return (
-    <a
-      href="#"
+    <button
+      type="button"
       className="mb-6 flex items-center gap-3.5 rounded-[18px] border border-border-soft bg-card px-[18px] py-3.5 shadow-[0_4px_14px_-10px_rgba(120,90,60,.4)]"
     >
       <Avatar variant="warm" initial="C" size={40} />
@@ -26,6 +26,6 @@ export function ComposerTrigger() {
           <circle cx="12" cy="13" r="4" />
         </svg>
       </span>
-    </a>
+    </button>
   );
 }

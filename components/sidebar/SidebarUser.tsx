@@ -12,8 +12,8 @@ export function SidebarUser() {
           </div>
           <div className="text-xs text-text-soft">{sidebarTexts.userRole}</div>
         </div>
-        <a
-          href="#"
+        <button
+          type="button"
           title={sidebarTexts.logoutTitle}
           aria-label={sidebarTexts.logoutTitle}
           className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-background text-text-muted"
@@ -30,7 +30,7 @@ export function SidebarUser() {
           >
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
           </svg>
-        </a>
+        </button>
       </div>
     </div>
   );
