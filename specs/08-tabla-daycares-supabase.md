@@ -1,6 +1,6 @@
 # Spec 08 — Tabla daycares y seed inicial en Supabase
 
-> **Estado:** Aprovado
+> **Estado:** Hecho
 > **Depende de:** —
 > **Fecha:** 2026-08-17
 
@@ -53,6 +53,7 @@ Convenciones:
 - Dos guarderías pueden compartir el mismo `name`.
 - La migración habilita RLS aunque el event trigger remoto también intente hacerlo automáticamente.
 - La tabla no define policies iniciales.
+- El advisor de seguridad reporta `rls_enabled_no_policy` con nivel `INFO` como consecuencia intencional de mantener la tabla cerrada sin policies; no se considera un warning ni un error de esta implementación.
 - La migración revoca todos los privilegios de tabla heredados por `anon`, `authenticated` y `service_role`.
 - El propietario de la tabla y las conexiones administrativas directas conservan la capacidad necesaria para aplicar y verificar la migración.
 
@@ -106,36 +107,37 @@ Criterios:
 9. Consultar el catálogo remoto para verificar columnas, tipos, defaults, constraints, RLS, ausencia de policies y ausencia de privilegios para los tres roles de Data API.
 10. Probar mediante transacciones revertidas que una inserción válida genera `id` y `created_at`, que nombres nulos, vacíos o formados por espacios fallan, y que nombres duplicados son válidos.
 11. Ejecutar nuevamente el seed contra el proyecto enlazado y verificar que los cuatro UUIDs aparecen una sola vez, que sus nombres son los canónicos y que sus valores originales de `created_at` no cambian.
-12. Ejecutar los advisors de seguridad y rendimiento, confirmar que la tabla no introduce findings nuevos y registrar como preexistentes los dos warnings de `public.rls_auto_enable()` que quedan fuera de este alcance.
+12. Ejecutar los advisors de seguridad y rendimiento, confirmar que la tabla no introduce findings nuevos de nivel `WARN` o `ERROR`, documentar como esperado el `INFO` `rls_enabled_no_policy` y registrar como preexistentes los dos warnings de `public.rls_auto_enable()` que quedan fuera de este alcance.
 
 ## Criterios de aceptación
 
-- [ ] Existe `supabase/config.toml`, generado por Supabase CLI y preparado para usar `supabase/seed.sql`.
-- [ ] Existe una única migración local generada por la CLI con sufijo `_create_daycares.sql`.
-- [ ] No existen archivos placeholder para `20260818004104_create_connection_test_table` ni `20260818004152_drop_connection_test_table`.
-- [ ] Las versiones remotas `20260818004104` y `20260818004152` están marcadas como revertidas antes del primer push real.
-- [ ] `supabase migration list` no muestra divergencias inesperadas después de aplicar la nueva migración.
-- [ ] El proyecto remoto contiene `public.daycares` con exactamente las columnas `id`, `name` y `created_at`.
-- [ ] `id` es `uuid`, primary key, `not null` y usa `gen_random_uuid()` por defecto.
-- [ ] `name` es `text`, `not null` y tiene el constraint `daycares_name_not_blank`.
-- [ ] `created_at` es `timestamptz`, `not null` y usa `now()` por defecto.
-- [ ] Insertar una fila proporcionando solo un nombre válido genera automáticamente `id` y `created_at`.
-- [ ] Insertar `name = null`, una cadena vacía o una cadena formada solo por espacios es rechazado por la base de datos.
-- [ ] Insertar dos filas con el mismo nombre es válido porque `name` no tiene una restricción unique.
-- [ ] RLS está habilitado en `public.daycares` aunque no existan policies.
-- [ ] `anon` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
-- [ ] `authenticated` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
-- [ ] `service_role` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
-- [ ] `supabase/seed.sql` contiene los cuatro UUIDs y nombres acordados.
-- [ ] `Guardería Sala Soles` existe con `id = 00000000-0000-4000-8000-000000000001`.
-- [ ] Ejecutar el seed dos veces deja exactamente una fila para cada uno de los cuatro UUIDs canónicos.
-- [ ] Una segunda ejecución restaura los nombres canónicos sin cambiar el `created_at` original.
-- [ ] El seed no elimina ni modifica guarderías con UUIDs diferentes a los cuatro definidos.
-- [ ] La migración y el seed están aplicados en el proyecto remoto mediante el historial y flujo de Supabase CLI.
-- [ ] El advisor de rendimiento no reporta findings nuevos causados por `public.daycares`.
-- [ ] El advisor de seguridad no reporta findings nuevos causados por `public.daycares`.
-- [ ] Los dos warnings preexistentes sobre `public.rls_auto_enable()` permanecen documentados y no se corrigen dentro de este spec.
-- [ ] No se agregan tablas adicionales, policies, tipos TypeScript, dependencias npm ni cambios en la aplicación Next.js.
+- [x] Existe `supabase/config.toml`, generado por Supabase CLI y preparado para usar `supabase/seed.sql`.
+- [x] Existe una única migración local generada por la CLI con sufijo `_create_daycares.sql`.
+- [x] No existen archivos placeholder para `20260818004104_create_connection_test_table` ni `20260818004152_drop_connection_test_table`.
+- [x] Las versiones remotas `20260818004104` y `20260818004152` están marcadas como revertidas antes del primer push real.
+- [x] `supabase migration list` no muestra divergencias inesperadas después de aplicar la nueva migración.
+- [x] El proyecto remoto contiene `public.daycares` con exactamente las columnas `id`, `name` y `created_at`.
+- [x] `id` es `uuid`, primary key, `not null` y usa `gen_random_uuid()` por defecto.
+- [x] `name` es `text`, `not null` y tiene el constraint `daycares_name_not_blank`.
+- [x] `created_at` es `timestamptz`, `not null` y usa `now()` por defecto.
+- [x] Insertar una fila proporcionando solo un nombre válido genera automáticamente `id` y `created_at`.
+- [x] Insertar `name = null`, una cadena vacía o una cadena formada solo por espacios es rechazado por la base de datos.
+- [x] Insertar dos filas con el mismo nombre es válido porque `name` no tiene una restricción unique.
+- [x] RLS está habilitado en `public.daycares` aunque no existan policies.
+- [x] `anon` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
+- [x] `authenticated` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
+- [x] `service_role` no tiene privilegios `select`, `insert`, `update`, `delete` ni otros privilegios sobre `public.daycares`.
+- [x] `supabase/seed.sql` contiene los cuatro UUIDs y nombres acordados.
+- [x] `Guardería Sala Soles` existe con `id = 00000000-0000-4000-8000-000000000001`.
+- [x] Ejecutar el seed dos veces deja exactamente una fila para cada uno de los cuatro UUIDs canónicos.
+- [x] Una segunda ejecución restaura los nombres canónicos sin cambiar el `created_at` original.
+- [x] El seed no elimina ni modifica guarderías con UUIDs diferentes a los cuatro definidos.
+- [x] La migración y el seed están aplicados en el proyecto remoto mediante el historial y flujo de Supabase CLI.
+- [x] El advisor de rendimiento no reporta findings nuevos causados por `public.daycares`.
+- [x] El advisor de seguridad no reporta findings nuevos de nivel `WARN` o `ERROR` causados por `public.daycares`.
+- [x] El finding `INFO` `rls_enabled_no_policy` de `public.daycares` permanece documentado como consecuencia intencional de habilitar RLS sin policies.
+- [x] Los dos warnings preexistentes sobre `public.rls_auto_enable()` permanecen documentados y no se corrigen dentro de este spec.
+- [x] No se agregan tablas adicionales, policies, tipos TypeScript, dependencias npm ni cambios en la aplicación Next.js.
 
 ## Decisiones tomadas y descartadas
 

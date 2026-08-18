@@ -1,7 +1,7 @@
 ---
 description: Verifica, corrige y marca los criterios de aceptacion de un spec usando Context7 para Next.js y Playwright para pantallas.
 mode: all
-model: opencode-go/kimi-k2.7-code
+model: openai/gpt-5.6-sol
 temperature: 0.1
 permission:
   read: allow
