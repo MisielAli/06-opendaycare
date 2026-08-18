@@ -48,6 +48,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Supabase
 
+- Use Supabase's official packages for application integration: `@supabase/supabase-js` for the core client and Data API, and `@supabase/ssr` for browser/server clients and session cookie handling in Next.js. Reuse the helpers in `utils/supabase/` instead of adding third-party wrappers or creating clients ad hoc
 - Load `.agents/skills/supabase/SKILL.md` for any Supabase task, including Database, Auth, Storage, Realtime, Edge Functions, client/SSR integration, CLI/MCP usage, and debugging
 - Before writing or changing SQL, schemas, migrations, RLS policies, indexes, triggers, functions, or other Postgres objects, also load `.agents/skills/supabase-postgres-best-practices/SKILL.md`
 - Supabase changes frequently: check the current changelog and use the Supabase MCP `search_docs` tool before implementing features or diagnosing service errors
