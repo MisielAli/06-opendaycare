@@ -1,6 +1,6 @@
 # Spec 09 — Tabla users y usuario staff demo en Supabase
 
-> **Estado:** Aprovado
+> **Estado:** Hecho
 > **Depende de:** SPEC 08
 > **Fecha:** 2026-08-17
 
@@ -164,42 +164,51 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] SPEC 08 existe y la migración `20260818052747_create_daycares` está aplicada antes de esta migración.
-- [ ] Existe una única migración nueva generada por la CLI con sufijo `_create_users.sql`.
-- [ ] `supabase migration list` no muestra divergencias inesperadas después del push.
-- [ ] Existe `public.user_role` con exactamente `staff`, `parent` y `admin` en ese orden.
-- [ ] Existe `public.user_status` con exactamente `pending` y `active` en ese orden.
-- [ ] No se crean los otros enums de la referencia ni tablas adicionales.
-- [ ] `public.users` contiene exactamente las diez columnas acordadas, con sus tipos, nullability y defaults definidos.
-- [ ] `public.users.id` es primary key y foreign key a `auth.users(id)` con `on delete cascade`.
-- [ ] `public.users.id` no genera un UUID independiente y coincide con el UUID de la cuenta Auth.
-- [ ] `public.users.daycare_id` es obligatorio y referencia `public.daycares(id)` con `on delete restrict`.
-- [ ] Dos usuarios diferentes pueden compartir el mismo `daycare_id`.
-- [ ] Existe el índice `users_daycare_id_idx` sobre `public.users(daycare_id)`.
-- [ ] `role` y `status` usan los enums correspondientes, y `status` usa `active` por default.
-- [ ] `full_name` rechaza `null`, cadena vacía y texto formado únicamente por espacios.
-- [ ] `avatar_url` acepta `null`.
-- [ ] `notify_on_post` y `daily_summary_enabled` son obligatorios y usan `true` por default.
-- [ ] `created_at` y `updated_at` son obligatorios y usan `now()` por default.
-- [ ] Actualizar un perfil cambia automáticamente `updated_at` mediante `set_users_updated_at`.
-- [ ] Eliminar una cuenta de prueba en `auth.users` elimina su perfil asociado.
-- [ ] Eliminar una guardería con usuarios asociados es rechazado y no elimina cuentas Auth ni perfiles.
-- [ ] Existe el esquema `private` y no está expuesto a `PUBLIC`, `anon`, `authenticated` ni `service_role`.
-- [ ] `private.handle_new_auth_user()` es `SECURITY DEFINER`, tiene `search_path` vacío, usa nombres totalmente calificados y no puede ejecutarse directamente por roles de Data API.
-- [ ] `on_auth_user_created` es `AFTER INSERT`, `DEFERRABLE INITIALLY DEFERRED`, se ejecuta al cierre de la transacción Auth y crea un único perfil con el metadata actualizado.
-- [ ] El trigger lee `daycare_id`, `role` y `full_name` desde `raw_app_meta_data`, no desde `raw_user_meta_data`.
-- [ ] Un alta Auth sin `daycare_id`, con UUID inválido, con guardería inexistente, con rol inválido o con nombre vacío falla de forma atómica y no deja filas huérfanas.
-- [ ] RLS está habilitado en `public.users` y no existen policies.
-- [ ] `anon`, `authenticated` y `service_role` no tienen privilegios sobre `public.users` ni uso de los enums nuevos.
-- [ ] `misiel@gmail.com` existe exactamente una vez en Supabase Auth, tiene el email confirmado y conserva los tres valores de `app_metadata` acordados.
-- [ ] El perfil de `misiel@gmail.com` comparte el UUID Auth, pertenece a `Guardería Sala Soles`, tiene rol `staff`, estado `active`, nombre `Misiel Moreno`, avatar nulo y ambas preferencias activadas.
-- [ ] Es posible iniciar sesión con `misiel@gmail.com` y el valor de `DEMO_STAFF_PASSWORD` sin exponer credenciales ni tokens en logs o archivos.
-- [ ] La contraseña demo, la clave secreta de Supabase y los tokens de sesión no aparecen en la spec, la migración, `supabase/seed.sql`, scripts, archivos de entorno versionados ni salida capturada.
-- [ ] `supabase/seed.sql`, `package.json`, el lockfile y los archivos de la aplicación Next.js permanecen sin cambios por esta spec.
-- [ ] El advisor de rendimiento no reporta findings nuevos causados por `public.users`.
-- [ ] El advisor de seguridad no reporta findings nuevos de nivel `WARN` o `ERROR` causados por esta migración.
-- [ ] El finding `INFO` por RLS habilitado sin policies queda documentado como intencional.
-- [ ] Los warnings preexistentes de `public.rls_auto_enable()` no se atribuyen a esta spec ni se modifican.
+- [x] SPEC 08 existe y la migración `20260818052747_create_daycares` está aplicada antes de esta migración.
+- [x] Existe una única migración nueva generada por la CLI con sufijo `_create_users.sql`.
+- [x] `supabase migration list` no muestra divergencias inesperadas después del push.
+- [x] Existe `public.user_role` con exactamente `staff`, `parent` y `admin` en ese orden.
+- [x] Existe `public.user_status` con exactamente `pending` y `active` en ese orden.
+- [x] No se crean los otros enums de la referencia ni tablas adicionales.
+- [x] `public.users` contiene exactamente las diez columnas acordadas, con sus tipos, nullability y defaults definidos.
+- [x] `public.users.id` es primary key y foreign key a `auth.users(id)` con `on delete cascade`.
+- [x] `public.users.id` no genera un UUID independiente y coincide con el UUID de la cuenta Auth.
+- [x] `public.users.daycare_id` es obligatorio y referencia `public.daycares(id)` con `on delete restrict`.
+- [x] Dos usuarios diferentes pueden compartir el mismo `daycare_id`.
+- [x] Existe el índice `users_daycare_id_idx` sobre `public.users(daycare_id)`.
+- [x] `role` y `status` usan los enums correspondientes, y `status` usa `active` por default.
+- [x] `full_name` rechaza `null`, cadena vacía y texto formado únicamente por espacios.
+- [x] `avatar_url` acepta `null`.
+- [x] `notify_on_post` y `daily_summary_enabled` son obligatorios y usan `true` por default.
+- [x] `created_at` y `updated_at` son obligatorios y usan `now()` por default.
+- [x] Actualizar un perfil cambia automáticamente `updated_at` mediante `set_users_updated_at`.
+- [x] Eliminar una cuenta de prueba en `auth.users` elimina su perfil asociado.
+- [x] Eliminar una guardería con usuarios asociados es rechazado y no elimina cuentas Auth ni perfiles.
+- [x] Existe el esquema `private` y no está expuesto a `PUBLIC`, `anon`, `authenticated` ni `service_role`.
+- [x] `private.handle_new_auth_user()` es `SECURITY DEFINER`, tiene `search_path` vacío, usa nombres totalmente calificados y no puede ejecutarse directamente por roles de Data API.
+- [x] `on_auth_user_created` es `AFTER INSERT`, `DEFERRABLE INITIALLY DEFERRED`, se ejecuta al cierre de la transacción Auth y crea un único perfil con el metadata actualizado.
+- [x] El trigger lee `daycare_id`, `role` y `full_name` desde `raw_app_meta_data`, no desde `raw_user_meta_data`.
+- [x] Un alta Auth sin `daycare_id`, con UUID inválido, con guardería inexistente, con rol inválido o con nombre vacío falla de forma atómica y no deja filas huérfanas.
+- [x] RLS está habilitado en `public.users` y no existen policies.
+- [x] `anon`, `authenticated` y `service_role` no tienen privilegios sobre `public.users` ni uso de los enums nuevos.
+- [x] `misiel@gmail.com` existe exactamente una vez en Supabase Auth, tiene el email confirmado y conserva los tres valores de `app_metadata` acordados.
+- [x] El perfil de `misiel@gmail.com` comparte el UUID Auth, pertenece a `Guardería Sala Soles`, tiene rol `staff`, estado `active`, nombre `Misiel Moreno`, avatar nulo y ambas preferencias activadas.
+- [x] Es posible iniciar sesión con `misiel@gmail.com` y el valor de `DEMO_STAFF_PASSWORD` sin exponer credenciales ni tokens en logs o archivos.
+- [x] La contraseña demo, la clave secreta de Supabase y los tokens de sesión no aparecen en la spec, la migración, `supabase/seed.sql`, scripts, archivos de entorno versionados ni salida capturada.
+- [x] `supabase/seed.sql`, `package.json`, el lockfile y los archivos de la aplicación Next.js permanecen sin cambios por esta spec.
+- [x] El advisor de rendimiento no reporta findings nuevos causados por `public.users`.
+- [x] El advisor de seguridad no reporta findings nuevos de nivel `WARN` o `ERROR` causados por esta migración.
+- [x] El finding `INFO` por RLS habilitado sin policies queda documentado como intencional.
+- [x] Los warnings preexistentes de `public.rls_auto_enable()` no se atribuyen a esta spec ni se modifican.
+
+### Evidencia de verificación (2026-08-18)
+
+- `npx supabase migration list` mostró `20260818052747` y `20260818063422` alineadas local/remoto; `npx supabase db push --dry-run` informó que el remoto está actualizado.
+- Consultas de catálogo verificaron enums, diez columnas, constraints, foreign keys, índice, funciones, triggers, RLS sin policies y ausencia de privilegios para los roles de Data API.
+- Pruebas remotas dentro de transacciones revertidas verificaron defaults, nombres inválidos, tenant inexistente, varios perfiles por guardería, `updated_at`, cascada Auth, restricción de guardería, trigger diferido y cinco variantes de metadata Auth inválida; no quedaron filas de prueba.
+- Auth contiene una sola cuenta confirmada para `misiel@gmail.com`; su `raw_app_meta_data` y perfil asociado coinciden con el contrato, incluido el UUID compartido.
+- El endpoint de contraseña de Supabase Auth respondió HTTP 200, devolvió una sesión autenticada para el email esperado y la sesión de prueba se cerró localmente con HTTP 204; solo se registraron estados booleanos, sin credenciales, claves ni tokens.
+- Advisors: rendimiento sin findings; seguridad solo informa el `INFO` intencional `rls_enabled_no_policy` para `public.users`. Los dos `WARN` de ejecución de `public.rls_auto_enable()` son preexistentes de SPEC 08; el `WARN` de protección de contraseñas filtradas es configuración Auth ajena a esta migración.
 
 ## Decisiones tomadas y descartadas
 
