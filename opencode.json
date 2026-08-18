@@ -6,5 +6,13 @@
       "command": ["npx", "-y", "@playwright/mcp@latest"],
       "enabled": true
     }
+  },
+  "lsp":true,
+  
+    "references": {
+    "docs": {
+      "path": "../07-DBschema",
+      "description":"Esquema de base de datos, tablas, columnas y referencias a crear, esto no esta implementado en la base de datos, es solo para referencia"
+    }
   }
 }
