@@ -43,6 +43,25 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Playwright Screenshots y cualquier cosa relacionada a Playwright tienen que estar en la carpeta .playwright-mcp
 - Context7: usaremos este MCP para traer la documentación actualizada del Framework
+- Supabase: use the Supabase MCP for project inspection, documentation, SQL, migrations, logs, Edge Functions, generated types, and security/performance advisors
+
+## Supabase
+
+- Load `.agents/skills/supabase/SKILL.md` for any Supabase task, including Database, Auth, Storage, Realtime, Edge Functions, client/SSR integration, CLI/MCP usage, and debugging
+- Before writing or changing SQL, schemas, migrations, RLS policies, indexes, triggers, functions, or other Postgres objects, also load `.agents/skills/supabase-postgres-best-practices/SKILL.md`
+- Supabase changes frequently: check the current changelog and use the Supabase MCP `search_docs` tool before implementing features or diagnosing service errors
+- Inspect the current remote schema before making database changes; use migrations for DDL and run security and performance advisors after schema changes
+- Enable RLS on every table exposed through the Data API and never expose secret or `service_role` keys to browser code
+- `../07-DBschema` is a design reference only. Its tables, columns, and relationships are not guaranteed to exist in the connected Supabase project
+- The repository currently has no local `supabase/` CLI configuration or migrations. Do not assume a local Supabase stack is available
+- `.env.example` documents `SUPABASE_DB_PASSWORD`; never read, print, or commit secret values from `.env`
+
+## Installed skills
+
+- `spec`: design large features and create specs before implementation
+- `spec-impl`: implement an approved spec on its dedicated branch
+- `supabase`: required for every Supabase-related task
+- `supabase-postgres-best-practices`: required before Postgres schema, SQL, RLS, migration, performance, or database security work
 
 
 ## Reglas de codigo
