@@ -51,9 +51,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Before writing or changing SQL, schemas, migrations, RLS policies, indexes, triggers, functions, or other Postgres objects, also load `.agents/skills/supabase-postgres-best-practices/SKILL.md`
 - Supabase changes frequently: check the current changelog and use the Supabase MCP `search_docs` tool before implementing features or diagnosing service errors
 - Inspect the current remote schema before making database changes; use migrations for DDL and run security and performance advisors after schema changes
+- **ALWAYS use migrations** for any change to the database schema (DDL). Never run raw SQL directly on the database for schema modifications
 - Enable RLS on every table exposed through the Data API and never expose secret or `service_role` keys to browser code
 - `../07-DBschema` is a design reference only. Its tables, columns, and relationships are not guaranteed to exist in the connected Supabase project
-- The repository currently has no local `supabase/` CLI configuration or migrations. Do not assume a local Supabase stack is available
+- The repository has a local `supabase/` CLI configuration with migrations in `supabase/migrations/`. Use `supabase start` for local development and `supabase db push` or migrations for remote changes
 - `.env.example` documents `SUPABASE_DB_PASSWORD`; never read, print, or commit secret values from `.env`
 
 ## Installed skills
