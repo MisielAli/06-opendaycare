@@ -32,8 +32,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Spec workflow
 
 - Large features go through the `/spec` → `/spec-impl` skills in `.agents/skills/` before coding
-- Specs live in `specs/NN-slug.md`; `/spec-impl` requires state `Approved` and creates a `spec-NN-slug` branch
-- When a spec is already implemented, use `/spec-verifier specs/NN-slug.md` to validate acceptance criteria, capture screenshots and mark the spec as done
+- General specs live in `specs/NN-slug.md`; all database-related specs must live in `specs/database/NN-slug.md`
+- `/spec-impl` requires state `Approved` and creates a `spec-NN-slug` branch
+- When a spec is already implemented, use `/spec-verifier <spec-path>` to validate acceptance criteria, capture screenshots when applicable, and mark the spec as done
 
 ## Implemented specs
 
