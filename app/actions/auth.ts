@@ -90,3 +90,11 @@ export async function login(
 
   redirect(destination);
 }
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut({ scope: "local" });
+
+  revalidatePath("/", "layout");
+  redirect("/login");
+}

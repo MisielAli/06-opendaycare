@@ -15,7 +15,6 @@ export const sidebarTexts = {
   brandName: "OpenDayCare",
   roomName: "Sala Soles",
   newPostButton: "Nueva publicación",
-  userName: "Caro Giménez",
-  userRole: "Maestra · Soles",
+  staffRoleLabel: "Personal · Soles",
   logoutTitle: "Cerrar sesión",
 } as const;
