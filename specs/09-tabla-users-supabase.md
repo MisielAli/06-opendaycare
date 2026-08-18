@@ -17,7 +17,7 @@
 - Eliminación automática del perfil cuando se elimina su cuenta en `auth.users` y bloqueo de la eliminación de una guardería que todavía tenga usuarios.
 - Actualización automática de `updated_at` en cada modificación de un perfil.
 - Esquema no expuesto `private` para las funciones de trigger.
-- Trigger `AFTER INSERT` sobre `auth.users` que crea el perfil desde `raw_app_meta_data` controlado por una operación administrativa.
+- Constraint trigger `AFTER INSERT`, `DEFERRABLE INITIALLY DEFERRED`, sobre `auth.users` que crea el perfil desde `raw_app_meta_data` al finalizar la operación administrativa.
 - Rechazo atómico del alta Auth cuando `daycare_id`, `role` o `full_name` falten o sean inválidos.
 - RLS habilitado en `public.users`, sin policies y con privilegios revocados para `anon`, `authenticated` y `service_role`.
 - Creación administrativa de una cuenta Auth confirmada para `misiel@gmail.com`, con rol `staff`, nombre `Misiel Moreno` y la guardería canónica `Guardería Sala Soles`.
@@ -84,8 +84,8 @@ Los nombres de tipos y valores se almacenan en inglés. Las etiquetas visibles e
 
 | Objeto | Contrato |
 | --- | --- |
-| `private.handle_new_auth_user()` | Función `SECURITY DEFINER`, `SET search_path = ''`, que valida `raw_app_meta_data` e inserta un perfil en `public.users` |
-| `on_auth_user_created` | Trigger `AFTER INSERT` sobre `auth.users`, por cada fila, que ejecuta `private.handle_new_auth_user()` |
+| `private.handle_new_auth_user()` | Función `SECURITY DEFINER`, `SET search_path = ''`, que lee la versión actual de `raw_app_meta_data`, la valida e inserta un perfil en `public.users` |
+| `on_auth_user_created` | Constraint trigger `AFTER INSERT`, `DEFERRABLE INITIALLY DEFERRED`, sobre `auth.users`, por cada fila, que ejecuta `private.handle_new_auth_user()` al cierre de la transacción |
 | `private.set_users_updated_at()` | Función de trigger que asigna `new.updated_at = now()` |
 | `set_users_updated_at` | Trigger `BEFORE UPDATE` sobre `public.users`, por cada fila |
 
@@ -104,6 +104,7 @@ Reglas del trigger Auth:
 - `daycare_id` debe ser un UUID válido que exista en `public.daycares`.
 - `role` debe ser un valor válido de `public.user_role`.
 - `full_name` debe existir y contener al menos un carácter distinto de espacio.
+- La validación se difiere hasta el cierre de la transacción porque Supabase Auth inserta primero la cuenta y actualiza después el `app_metadata` personalizado dentro de la misma transacción.
 - `status`, `notify_on_post`, `daily_summary_enabled`, `created_at` y `updated_at` usan los defaults de `public.users`.
 - Un error de validación o inserción cancela también el insert en `auth.users`; no se conserva una cuenta Auth sin perfil.
 - La función no lee `raw_user_meta_data` para asignar tenant o rol.
@@ -148,7 +149,7 @@ Criterios:
 2. Consultar la versión y ayuda vigentes de Supabase CLI, ejecutar `supabase migration new create_users` y comprobar que la CLI creó una única migración pendiente con el timestamp correspondiente.
 3. Definir en la migración `public.user_role`, `public.user_status`, `public.users`, sus constraints, foreign keys, defaults y el índice `users_daycare_id_idx`.
 4. Crear el esquema `private` con acceso revocado para `PUBLIC`, `anon`, `authenticated` y `service_role`, y definir `private.set_users_updated_at()` junto con el trigger `set_users_updated_at`.
-5. Definir `private.handle_new_auth_user()` como `SECURITY DEFINER SET search_path = ''`, validar los tres valores de `raw_app_meta_data`, usar objetos totalmente calificados y crear el trigger `on_auth_user_created` sobre `auth.users`.
+5. Definir `private.handle_new_auth_user()` como `SECURITY DEFINER SET search_path = ''`, leer la fila Auth actual, validar los tres valores de `raw_app_meta_data`, usar objetos totalmente calificados y crear `on_auth_user_created` como constraint trigger diferido sobre `auth.users`.
 6. Habilitar RLS explícitamente en `public.users`, no crear policies y revocar privilegios sobre la tabla, los enums, el esquema privado y sus funciones para los roles no administrativos acordados.
 7. Revisar la migración completa, ejecutar `supabase migration list` y `supabase db push --dry-run`, y detener la aplicación si aparece una migración inesperada o una divergencia con SPEC 08.
 8. Aplicar la migración al proyecto remoto con Supabase CLI y confirmar que el historial local y remoto queda alineado.
@@ -185,7 +186,7 @@ Criterios:
 - [ ] Eliminar una guardería con usuarios asociados es rechazado y no elimina cuentas Auth ni perfiles.
 - [ ] Existe el esquema `private` y no está expuesto a `PUBLIC`, `anon`, `authenticated` ni `service_role`.
 - [ ] `private.handle_new_auth_user()` es `SECURITY DEFINER`, tiene `search_path` vacío, usa nombres totalmente calificados y no puede ejecutarse directamente por roles de Data API.
-- [ ] `on_auth_user_created` se ejecuta después de cada insert en `auth.users` y crea un único perfil.
+- [ ] `on_auth_user_created` es `AFTER INSERT`, `DEFERRABLE INITIALLY DEFERRED`, se ejecuta al cierre de la transacción Auth y crea un único perfil con el metadata actualizado.
 - [ ] El trigger lee `daycare_id`, `role` y `full_name` desde `raw_app_meta_data`, no desde `raw_user_meta_data`.
 - [ ] Un alta Auth sin `daycare_id`, con UUID inválido, con guardería inexistente, con rol inválido o con nombre vacío falla de forma atómica y no deja filas huérfanas.
 - [ ] RLS está habilitado en `public.users` y no existen policies.
@@ -216,7 +217,7 @@ Criterios:
 - **Sí:** índice explícito para `daycare_id` — PostgreSQL no indexa automáticamente las foreign keys.
 - **Sí:** trigger de `updated_at` — la fecha se mantiene aunque la modificación no provenga de la aplicación.
 - **No:** delegar `updated_at` al cliente — permitiría timestamps omitidos o inconsistentes.
-- **Sí:** trigger Auth con `raw_app_meta_data` — tenant y rol deben provenir de un contexto administrativo controlado.
+- **Sí:** constraint trigger Auth diferido con `raw_app_meta_data` — tenant y rol deben provenir de un contexto administrativo controlado, y Supabase Auth aplica el metadata personalizado después del insert inicial dentro de la misma transacción.
 - **No:** usar `raw_user_meta_data` para tenant o rol — el usuario puede modificar esos metadatos y escalar privilegios.
 - **Sí:** fallar de forma atómica ante metadata inválida — evita cuentas Auth utilizables sin perfil o sin guardería válida.
 - **No:** crear cuentas incompletas para repararlas después — introduce estados inconsistentes y rutas de autorización ambiguas.

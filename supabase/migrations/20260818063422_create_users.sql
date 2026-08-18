@@ -49,12 +49,26 @@ security definer
 set search_path = ''
 as $$
 declare
-  daycare_id_text text := new.raw_app_meta_data ->> 'daycare_id';
-  role_text text := new.raw_app_meta_data ->> 'role';
-  full_name_text text := new.raw_app_meta_data ->> 'full_name';
+  user_app_metadata jsonb;
+  daycare_id_text text;
+  role_text text;
+  full_name_text text;
   resolved_daycare_id uuid;
   resolved_role public.user_role;
 begin
+  select raw_app_meta_data
+  into user_app_metadata
+  from auth.users
+  where id = new.id;
+
+  if not found then
+    raise exception 'Auth user no longer exists when creating its profile';
+  end if;
+
+  daycare_id_text = user_app_metadata ->> 'daycare_id';
+  role_text = user_app_metadata ->> 'role';
+  full_name_text = user_app_metadata ->> 'full_name';
+
   if daycare_id_text is null or btrim(daycare_id_text) = '' then
     raise exception 'Auth app_metadata.daycare_id is required';
   end if;
@@ -99,8 +113,9 @@ $$;
 revoke all privileges on function private.handle_new_auth_user()
 from public, anon, authenticated, service_role;
 
-create trigger on_auth_user_created
+create constraint trigger on_auth_user_created
 after insert on auth.users
+deferrable initially deferred
 for each row
 execute function private.handle_new_auth_user();
 
