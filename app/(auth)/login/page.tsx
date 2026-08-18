@@ -1,7 +1,29 @@
+import type { LoginError } from "@/app/actions/auth";
+import { getSafeInternalDestination } from "@/app/lib/auth";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { BrandMark } from "@/components/auth/BrandMark";
 
-export default function LoginPage() {
+function getLoginError(
+  error: string | string[] | undefined,
+): LoginError | undefined {
+  if (
+    error === "invalid_credentials" ||
+    error === "unauthorized" ||
+    error === "service_unavailable"
+  ) {
+    return error;
+  }
+
+  return undefined;
+}
+
+export default async function LoginPage({
+  searchParams,
+}: PageProps<"/login">) {
+  const query = await searchParams;
+  const next = getSafeInternalDestination(query.next);
+  const initialError = getLoginError(query.error);
+
   return (
     <main className="grid min-h-screen bg-auth-background lg:grid-cols-[1.05fr_1fr]">
       <section className="relative hidden overflow-hidden bg-gradient-to-br from-[#f6a98e] via-[#f2937a] to-[#ec7e62] px-[60px] py-14 text-white lg:flex lg:flex-col lg:justify-between">
@@ -40,7 +62,7 @@ export default function LoginPage() {
           <p className="mb-7 text-[15px] text-text-muted">
             Ingresá para ver el día de hoy.
           </p>
-          <LoginForm />
+          <LoginForm next={next} initialError={initialError} />
         </div>
       </section>
     </main>
