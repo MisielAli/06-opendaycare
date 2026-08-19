@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { StaffIdentity } from "@/app/lib/auth";
 import { sidebarTexts } from "@/app/lib/navigation";
 import { useStaff } from "@/components/staff/StaffProvider";
 import { SidebarNav } from "./SidebarNav";
@@ -24,7 +25,11 @@ function BrandMark() {
   );
 }
 
-export function Sidebar() {
+type SidebarProps = {
+  identity: StaffIdentity;
+};
+
+export function Sidebar({ identity }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { openComposer } = useStaff();
 
@@ -129,7 +134,7 @@ export function Sidebar() {
         </button>
 
         <SidebarNav />
-        <SidebarUser />
+        <SidebarUser identity={identity} />
       </aside>
     </>
   );

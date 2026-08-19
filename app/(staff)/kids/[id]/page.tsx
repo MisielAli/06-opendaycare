@@ -1,3 +1,4 @@
+import { requireStaff } from "@/app/lib/auth";
 import { formatBirthDate, getAgeLabel, kids } from "@/app/lib/kids";
 import { AllergyAlert } from "@/components/kids/AllergyAlert";
 import { ParentsPanel } from "@/components/kids/ParentsPanel";
@@ -12,6 +13,8 @@ export function generateStaticParams() {
 
 export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
   const { id } = await props.params;
+  await requireStaff(`/kids/${encodeURIComponent(id)}`);
+
   const kid = kids.find((candidate) => candidate.id === id);
 
   if (!kid) {
