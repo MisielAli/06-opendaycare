@@ -20,6 +20,7 @@ export {
 interface RoomRow {
   id: string;
   name: string;
+  created_at: string;
 }
 
 interface ChildRow {
@@ -46,7 +47,11 @@ const loadActiveKidsAndRooms = cache(async (): Promise<KidsAndRooms> => {
     { data: roomsData, error: roomsError },
     { data: childrenData, error: childrenError },
   ] = await Promise.all([
-    supabase.from("rooms").select("id, name").order("name", { ascending: true }),
+    supabase
+        .from("rooms")
+        .select("id, name, created_at")
+        .order("created_at", { ascending: true })
+        .order("id", { ascending: true }),
     supabase
       .from("children")
       .select(

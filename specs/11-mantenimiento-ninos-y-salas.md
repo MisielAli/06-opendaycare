@@ -1,6 +1,6 @@
 # Spec 11 — Mantenimiento de niños y salas con Supabase
 
-> **Estado:** Aprovado
+> **Estado:** Done
 > **Depende de:** SPEC 02, SPEC 05, SPEC 08, SPEC 09, SPEC 10
 > **Fecha:** 2026-08-19
 
@@ -261,43 +261,43 @@ Criterios:
 ## Criterios de aceptación
 
 - [x] SPEC 02, SPEC 05, SPEC 08, SPEC 09 y SPEC 10 existen como dependencias válidas.
-- [ ] Existen dos migraciones nuevas generadas por la CLI con sufijos `_create_child_status_enum_and_rooms` y `_create_children`.
-- [ ] `public.child_status` existe con valores `active` y `archived`.
-- [ ] `public.rooms` tiene exactamente las columnas `id`, `daycare_id`, `name` y `created_at`.
-- [ ] `rooms.daycare_id` referencia `public.daycares(id)` con `on delete restrict`.
-- [ ] Existe `rooms_daycare_id_idx` sobre `rooms(daycare_id)`.
-- [ ] `rooms.name` rechaza `null`, cadena vacía y texto solo de espacios.
-- [ ] RLS está habilitado en `public.rooms` con policy de SELECT para `authenticated`.
-- [ ] `public.children` tiene las once columnas acordadas con sus tipos, defaults y nullability.
-- [ ] `children.room_id` referencia `public.rooms(id)` con `on delete restrict`.
-- [ ] Existe `children_room_id_idx` sobre `children(room_id)`.
-- [ ] `children.full_name` rechaza `null`, cadena vacía y texto solo de espacios.
-- [ ] `children.birth_date` rechaza fechas futuras mediante constraint.
-- [ ] `children.enrolled_at` usa `current_date` por defecto.
-- [ ] `children.photo_consent` usa `true` por defecto.
-- [ ] `children.status` usa `public.child_status` con default `'active'`.
-- [ ] Actualizar un niño cambia automáticamente `updated_at`.
-- [ ] RLS está habilitado en `public.children` con policies de SELECT para `authenticated` y INSERT/UPDATE solo para `staff`.
-- [ ] `supabase/seed.sql` contiene las tres salas con UUIDs fijos bajo `Guardería Sala Soles`.
-- [ ] Ejecutar el seed dos veces deja exactamente una fila por sala.
-- [ ] Las migraciones y el seed están aplicados en el remoto.
-- [ ] Advisors no reportan findings nuevos de nivel `WARN` o `ERROR`.
-- [ ] `app/actions/kids.ts` existe con la Server Action `addKid()`.
-- [ ] `addKid()` rechaza `fullName` vacío, `birthDate` vacío o futuro, y `roomId` ausente.
-- [ ] `addKid()` inserta en `public.children` con `enrolled_at = current_date`.
-- [ ] `app/lib/kids.ts` no contiene el array `kids` mock ni los 8 niños hardcodeados.
-- [ ] `app/lib/kids.ts` exporta `getKids()`, `getRooms()`, `getKidById()` y `kidRecordToKid()`.
-- [ ] `app/lib/kids.ts` conserva `getAgeLabel()`, `formatBirthDate()` y `roomOptions`.
-- [ ] `/kids` muestra salas con conteos reales de niños desde la base de datos.
-- [ ] Las salas son colapsables con toggle visual en cliente.
-- [ ] El botón `+ Agregar niño` abre el modal y el alta exitosa inserta en la DB y recarga la página.
-- [ ] `/kids/[id]` consulta un niño real por UUID y responde 404 para UUIDs inexistentes.
-- [ ] El perfil muestra nombre, edad calculada, alergias, fecha de nacimiento, sala e ingreso.
-- [ ] Los padres en el perfil muestran datos mock (sin tabla `parent_children` aún).
-- [ ] `KidsPageContent.tsx` no contiene lógica de persistencia en memoria (`TempKid`, `createdAt`, inserción mock).
-- [ ] `npm run lint` y `npx tsc --noEmit` pasan sin errores.
-- [ ] No hay referencias a `localStorage`, `sessionStorage` ni persistencia en memoria para niños.
-- [ ] Los identificadores están en inglés y el texto visible está en español.
+- [x] Existen dos migraciones nuevas generadas por la CLI con sufijos `_create_child_status_enum_and_rooms` y `_create_children`.
+- [x] `public.child_status` existe con valores `active` y `archived`.
+- [x] `public.rooms` tiene exactamente las columnas `id`, `daycare_id`, `name` y `created_at`.
+- [x] `rooms.daycare_id` referencia `public.daycares(id)` con `on delete restrict`.
+- [x] Existe `rooms_daycare_id_idx` sobre `rooms(daycare_id)`.
+- [x] `rooms.name` rechaza `null`, cadena vacía y texto solo de espacios.
+- [x] RLS está habilitado en `public.rooms` con policy de SELECT para `authenticated`.
+- [x] `public.children` tiene las once columnas acordadas con sus tipos, defaults y nullability.
+- [x] `children.room_id` referencia `public.rooms(id)` con `on delete restrict`.
+- [x] Existe `children_room_id_idx` sobre `children(room_id)`.
+- [x] `children.full_name` rechaza `null`, cadena vacía y texto solo de espacios.
+- [x] `children.birth_date` rechaza fechas futuras mediante constraint.
+- [x] `children.enrolled_at` usa `current_date` por defecto.
+- [x] `children.photo_consent` usa `true` por defecto.
+- [x] `children.status` usa `public.child_status` con default `'active'`.
+- [x] Actualizar un niño cambia automáticamente `updated_at`.
+- [x] RLS está habilitado en `public.children` con policies de SELECT para `authenticated` y INSERT/UPDATE solo para `staff`.
+- [x] `supabase/seed.sql` contiene las tres salas con UUIDs fijos bajo `Guardería Sala Soles`.
+- [x] Ejecutar el seed dos veces deja exactamente una fila por sala.
+- [x] Las migraciones y el seed están aplicados en el remoto.
+- [x] Advisors no reportan findings nuevos de nivel `WARN` o `ERROR`.
+- [x] `app/actions/kids.ts` existe con la Server Action `addKid()`.
+- [x] `addKid()` rechaza `fullName` vacío, `birthDate` vacío o futuro, y `roomId` ausente.
+- [x] `addKid()` inserta en `public.children` con `enrolled_at = current_date`.
+- [x] `app/lib/kids.ts` no contiene el array `kids` mock ni los 8 niños hardcodeados.
+- [x] `app/lib/kids.ts` exporta `getKids()`, `getRooms()`, `getKidById()` y `kidRecordToKid()`.
+- [x] `app/lib/kids.ts` conserva `getAgeLabel()`, `formatBirthDate()` y `roomOptions`.
+- [x] `/kids` muestra salas con conteos reales de niños desde la base de datos.
+- [x] Las salas son colapsables con toggle visual en cliente.
+- [x] El botón `+ Agregar niño` abre el modal y el alta exitosa inserta en la DB y recarga la página.
+- [x] `/kids/[id]` consulta un niño real por UUID y responde 404 para UUIDs inexistentes.
+- [x] El perfil muestra nombre, edad calculada, alergias, fecha de nacimiento, sala e ingreso.
+- [x] Los padres en el perfil muestran datos mock (sin tabla `parent_children` aún).
+- [x] `KidsPageContent.tsx` no contiene lógica de persistencia en memoria (`TempKid`, `createdAt`, inserción mock).
+- [x] `npm run lint` y `npx tsc --noEmit` pasan sin errores.
+- [x] No hay referencias a `localStorage`, `sessionStorage` ni persistencia en memoria para niños.
+- [x] Los identificadores están en inglés y el texto visible está en español.
 
 ## Decisiones tomadas y descartadas
 
