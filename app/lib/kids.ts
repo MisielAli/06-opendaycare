@@ -123,35 +123,41 @@ export async function getKidById(id: string): Promise<KidRecord | null> {
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data: child, error: childError } = await supabase
     .from("children")
     .select(
-      "id, room_id, full_name, birth_date, enrolled_at, medical_notes, allergy_tags, photo_consent, status, rooms(name)",
+      "id, room_id, full_name, birth_date, enrolled_at, medical_notes, allergy_tags, photo_consent, status",
     )
     .eq("id", id)
     .maybeSingle();
 
-  if (error || !data) {
+  if (childError || !child) {
     return null;
   }
 
-  const child = data as ChildRow & { rooms: { name: string }[] | null };
-  const roomName = child.rooms?.[0]?.name;
+  const childRow = child as ChildRow;
+  const { data: room, error: roomError } = await supabase
+    .from("rooms")
+    .select("id, name")
+    .eq("id", childRow.room_id)
+    .maybeSingle();
 
-  if (!roomName) {
+  if (roomError || !room) {
     return null;
   }
+
+  const roomRow = room as RoomRow;
 
   return {
-    id: child.id,
-    fullName: child.full_name,
-    birthDate: child.birth_date,
-    roomName,
-    enrolledAt: child.enrolled_at,
-    allergyTags: child.allergy_tags ?? [],
-    medicalNotes: child.medical_notes ?? null,
-    photoConsent: child.photo_consent,
-    status: child.status,
+    id: childRow.id,
+    fullName: childRow.full_name,
+    birthDate: childRow.birth_date,
+    roomName: roomRow.name,
+    enrolledAt: childRow.enrolled_at,
+    allergyTags: childRow.allergy_tags ?? [],
+    medicalNotes: childRow.medical_notes ?? null,
+    photoConsent: childRow.photo_consent,
+    status: childRow.status,
   };
 }
 
