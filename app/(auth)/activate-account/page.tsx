@@ -1,7 +1,14 @@
 import { ActivateAccountForm } from "@/components/auth/ActivateAccountForm";
 import { BrandMark } from "@/components/auth/BrandMark";
 
-export default function ActivateAccountPage() {
+interface PageProps {
+  searchParams: Promise<{ code?: string }>;
+}
+
+export default async function ActivateAccountPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const initialCode = typeof params.code === "string" ? params.code.trim().toUpperCase() : "";
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-auth-background px-6 py-10 sm:px-10">
       <div className="w-full max-w-[440px]">
@@ -28,7 +35,7 @@ export default function ActivateAccountPage() {
           </div>
         </section>
 
-        <ActivateAccountForm />
+        <ActivateAccountForm initialCode={initialCode} />
       </div>
     </main>
   );

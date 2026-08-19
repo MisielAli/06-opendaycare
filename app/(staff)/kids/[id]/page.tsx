@@ -5,22 +5,70 @@ import {
   getKidById,
   kidRecordToKid,
 } from "@/app/lib/kids";
+import { relationshipToUI } from "@/app/lib/invitations";
 import type { ParentLink } from "@/app/lib/kids-shared";
+import { pendingParentAvatarColor } from "@/app/lib/kids-shared";
 import { AllergyAlert } from "@/components/kids/AllergyAlert";
 import { ParentsPanel } from "@/components/kids/ParentsPanel";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const dynamicParams = true;
 
-const demoParents: ParentLink[] = [
-  {
-    name: "Lucía Fernández",
-    roleLabel: "Mamá",
-    status: "active",
-    avatarColor: "#C9B6E8",
-  },
-];
+async function getParentsForKid(childId: string): Promise<ParentLink[]> {
+  const supabase = await createClient();
+
+  const parents: ParentLink[] = [];
+
+  // Active links from parent_children
+  const { data: links } = await supabase
+    .from("parent_children")
+    .select("relationship, parent_id")
+    .eq("child_id", childId);
+
+  if (links && links.length > 0) {
+    const parentIds = (links as { parent_id: string; relationship: string }[]).map((l) => l.parent_id);
+    const { data: users } = await supabase
+      .from("users")
+      .select("id, full_name")
+      .in("id", parentIds);
+
+    const userMap = new Map(
+      ((users ?? []) as { id: string; full_name: string }[]).map((u) => [u.id, u.full_name])
+    );
+
+    for (const link of links as { parent_id: string; relationship: keyof typeof relationshipToUI }[]) {
+      const fullName = userMap.get(link.parent_id) ?? "Padre";
+      parents.push({
+        name: fullName,
+        roleLabel: relationshipToUI[link.relationship] ?? "Tutor/a",
+        status: "active",
+        avatarColor: "#C9B6E8",
+      });
+    }
+  }
+
+  // Pending invitations
+  const { data: invitations } = await supabase
+    .from("invitations")
+    .select("full_name, relationship")
+    .eq("child_id", childId)
+    .eq("status", "pending");
+
+  if (invitations) {
+    for (const inv of invitations as { full_name: string; relationship: keyof typeof relationshipToUI }[]) {
+      parents.push({
+        name: inv.full_name,
+        roleLabel: relationshipToUI[inv.relationship] ?? "Tutor/a",
+        status: "pending",
+        avatarColor: pendingParentAvatarColor,
+      });
+    }
+  }
+
+  return parents;
+}
 
 export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
   const { id } = await props.params;
@@ -33,6 +81,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
   }
 
   const kid = kidRecordToKid(kidRecord);
+  const parents = await getParentsForKid(kidRecord.id);
 
   return (
     <div className="mx-auto w-full max-w-[820px] px-6 pb-20 pt-16 md:px-10 md:pt-[34px]">
@@ -111,7 +160,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
             </svg>
             Resumen del día
           </button>
-          <ParentsPanel kidName={kid.name} parents={demoParents} />
+          <ParentsPanel kidName={kid.name} childId={kidRecord.id} parents={parents} />
         </div>
       </div>
     </div>

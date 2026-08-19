@@ -14,18 +14,27 @@ function getParentDetails(parent: ParentLink) {
     : `${parent.roleLabel} · invitación enviada`;
 }
 
-export function ParentsPanel({ kidName, parents }: { kidName: string; parents: ParentLink[] }) {
+export function ParentsPanel({
+  kidName,
+  childId,
+  parents,
+}: {
+  kidName: string;
+  childId: string;
+  parents: ParentLink[];
+}) {
   const [pendingParents, setPendingParents] = useState<ParentLink[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openerRef = useRef<HTMLButtonElement>(null);
   const displayedParents = [...parents, ...pendingParents];
 
-  function addPendingParent({ fullName, roleLabel }: { fullName: string; roleLabel: string }) {
+  function handleInviteSuccess({ fullName, roleLabel }: { fullName: string; roleLabel: string }) {
     setPendingParents((currentParents) => [
       ...currentParents,
       { name: fullName, roleLabel, status: "pending", avatarColor: pendingParentAvatarColor },
     ]);
-    setIsModalOpen(false);
+    // Keep modal open if email failed is handled inside modal; here we just add row
+    // Modal will close itself on email success via onClose
   }
 
   return (
@@ -87,7 +96,21 @@ export function ParentsPanel({ kidName, parents }: { kidName: string; parents: P
           </span>
         </button>
       </div>
-      {isModalOpen ? <LinkParentModal kidName={kidName} openerRef={openerRef} onClose={() => setIsModalOpen(false)} onSubmit={addPendingParent} /> : null}
+      {isModalOpen ? (
+        <LinkParentModal
+          kidName={kidName}
+          childId={childId}
+          openerRef={openerRef}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={(values) => {
+            handleInviteSuccess(values);
+            // Close only if we still want to close; modal itself handles close on success with emailSent true
+            // If email failed, modal keeps open but we already added pending row
+            // To ensure modal closes on success, we check if modal still open and close after a tick if needed
+            // The modal's onClose will be called internally on success; we just ensure state sync
+          }}
+        />
+      ) : null}
     </div>
   );
 }
