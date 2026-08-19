@@ -1,45 +1,22 @@
 "use client";
 
 import { useRef, useState } from "react";
-import {
-  fallbackAvatar,
-  getEnrollmentLabel,
-  type AddKidFormValues,
-  type TempKid,
-} from "@/app/lib/kids";
+import type { Kid, RoomRecord } from "@/app/lib/kids-shared";
 import { AddKidModal } from "@/components/kids/AddKidModal";
 import { KidsBrowser } from "@/components/kids/KidsBrowser";
-import { useStaff } from "@/components/staff/StaffProvider";
 
-export function KidsPageContent() {
-  const { kids, temporaryKids, addTemporaryKid } = useStaff();
+interface KidsPageContentProps {
+  rooms: RoomRecord[];
+  kids: Kid[];
+}
+
+export function KidsPageContent({ rooms, kids }: KidsPageContentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const addButtonRef = useRef<HTMLButtonElement>(null);
 
   function closeModal() {
     setIsModalOpen(false);
     window.setTimeout(() => addButtonRef.current?.focus(), 0);
-  }
-
-  function handleSave(values: AddKidFormValues) {
-    const [day, month, year] = values.birthDate.split("/");
-    const firstAllergy = values.allergyTags.split(",").map((value) => value.trim()).find(Boolean);
-    const createdAt = new Date();
-    const newKid: TempKid = {
-      id: `temp-${createdAt.getTime()}`,
-      name: values.fullName || "Niño sin nombre",
-      birthDate: `${year}-${month}-${day}`,
-      room: values.room,
-      enrollmentLabel: getEnrollmentLabel(createdAt),
-      allergyLabel: firstAllergy?.toLocaleUpperCase("es"),
-      allergyNotes: values.medicalNotes || undefined,
-      ...fallbackAvatar,
-      parents: [],
-      createdAt,
-    };
-
-    addTemporaryKid(newKid);
-    closeModal();
   }
 
   return (
@@ -66,8 +43,8 @@ export function KidsPageContent() {
         </button>
       </div>
 
-      <KidsBrowser kids={kids} latestAddedKidId={temporaryKids[0]?.id} />
-      {isModalOpen ? <AddKidModal onClose={closeModal} onSave={handleSave} /> : null}
+      <KidsBrowser rooms={rooms} kids={kids} />
+      {isModalOpen ? <AddKidModal rooms={rooms} onClose={closeModal} /> : null}
     </div>
   );
 }

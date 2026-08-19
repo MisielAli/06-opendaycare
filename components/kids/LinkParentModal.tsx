@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { LinkParentFormValues, ParentRole } from "@/app/lib/kids";
+import type { LinkParentFormValues, ParentRole } from "@/app/lib/kids-shared";
 
 const initialValues: LinkParentFormValues = {
   fullName: "",

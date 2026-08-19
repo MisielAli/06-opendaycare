@@ -1,257 +1,175 @@
-export type ParentStatus = "active" | "pending";
+import "server-only";
 
-export type ParentRole = "Mamá" | "Papá" | "Tutor/a";
+import { cache } from "react";
 
-export type RoomName = "Soles" | "Luna" | "Estrellas";
+import { createClient } from "@/utils/supabase/server";
+import {
+  fallbackAvatar,
+  getEnrollmentLabel,
+  type Kid,
+  type KidRecord,
+  type RoomRecord,
+} from "@/app/lib/kids-shared";
 
-export interface RoomOption {
-  name: RoomName;
-}
+export {
+  formatBirthDate,
+  getAgeLabel,
+  roomOptions,
+} from "@/app/lib/kids-shared";
 
-export interface AddKidFormValues {
-  fullName: string;
-  birthDate: string;
-  room: RoomName | "";
-  allergyTags: string;
-  medicalNotes: string;
-}
-
-export interface LinkParentFormValues {
-  fullName: string;
-  email: string;
-  roleLabel: ParentRole;
-}
-
-export interface ParentLink {
-  name: string;
-  roleLabel: string;
-  status: ParentStatus;
-  avatarColor: string;
-}
-
-export const pendingParentAvatarColor = "#A9C7E8";
-
-export interface Kid {
+interface RoomRow {
   id: string;
   name: string;
-  birthDate: string;
-  room: string;
-  enrollmentLabel: string;
-  allergyLabel?: string;
-  allergyNotes?: string;
-  avatarColor: string;
-  avatarTextColor: string;
-  parents: ParentLink[];
 }
 
-export interface TempKid extends Kid {
-  createdAt: Date;
+interface ChildRow {
+  id: string;
+  room_id: string;
+  full_name: string;
+  birth_date: string;
+  enrolled_at: string;
+  medical_notes: string | null;
+  allergy_tags: string[] | null;
+  photo_consent: boolean;
+  status: "active" | "archived";
 }
 
-export const roomOptions: RoomOption[] = [
-  { name: "Soles" },
-  { name: "Luna" },
-  { name: "Estrellas" },
-];
-
-export const fallbackAvatar = {
-  avatarColor: "#F2937A",
-  avatarTextColor: "#8B3A24",
-};
-
-export const fallbackEnrollmentDate = new Date();
-
-export function getEnrollmentLabel(date: Date): string {
-  return new Intl.DateTimeFormat("es", { month: "short", year: "numeric" })
-    .format(date)
-    .replace(".", "");
+interface KidsAndRooms {
+  rooms: RoomRecord[];
+  kids: KidRecord[];
 }
 
-export const kids: Kid[] = [
-  {
-    id: "0001",
-    name: "Mateo Fernández",
-    birthDate: "2022-03-12",
-    room: "Soles",
-    enrollmentLabel: "feb 2025",
-    allergyLabel: "MANÍ",
-    allergyNotes:
-      "Alergia al maní. Evitar frutos secos. Lleva inhalador en la mochila.",
-    avatarColor: "#A9D9E8",
-    avatarTextColor: "#1F7A93",
-    parents: [
-      {
-        name: "Lucía Fernández",
-        roleLabel: "Mamá",
-        status: "active",
-        avatarColor: "#C9B6E8",
-      },
-      {
-        name: "Diego Fernández",
-        roleLabel: "Papá",
-        status: "pending",
-        avatarColor: "#A9C7E8",
-      },
-    ],
-  },
-  {
-    id: "0002",
-    name: "Sofía Méndez",
-    birthDate: "2023-05-23",
-    room: "Soles",
-    enrollmentLabel: "mar 2025",
-    avatarColor: "#F4B8CC",
-    avatarTextColor: "#C44A7A",
-    parents: [
-      {
-        name: "Mariana Méndez",
-        roleLabel: "Mamá",
-        status: "active",
-        avatarColor: "#E7A6C0",
-      },
-    ],
-  },
-  {
-    id: "0003",
-    name: "Benjamín Ruiz",
-    birthDate: "2022-09-18",
-    room: "Soles",
-    enrollmentLabel: "feb 2025",
-    avatarColor: "#B9DEC4",
-    avatarTextColor: "#3E8B62",
-    parents: [
-      {
-        name: "Carolina Ruiz",
-        roleLabel: "Mamá",
-        status: "active",
-        avatarColor: "#B9DEC4",
-      },
-      {
-        name: "Pablo Ruiz",
-        roleLabel: "Papá",
-        status: "active",
-        avatarColor: "#A9C7E8",
-      },
-    ],
-  },
-  {
-    id: "0004",
-    name: "Valentina Soto",
-    birthDate: "2023-11-05",
-    room: "Soles",
-    enrollmentLabel: "abr 2025",
-    avatarColor: "#F4DC8E",
-    avatarTextColor: "#9A7B1E",
-    parents: [],
-  },
-  {
-    id: "0005",
-    name: "Tomás Díaz",
-    birthDate: "2022-06-28",
-    room: "Soles",
-    enrollmentLabel: "feb 2025",
-    allergyLabel: "LACTOSA",
-    allergyNotes: "Intolerancia a la lactosa. Ofrecer alternativas sin lácteos.",
-    avatarColor: "#C9B6E8",
-    avatarTextColor: "#7B5FC0",
-    parents: [
-      {
-        name: "Martín Díaz",
-        roleLabel: "Papá",
-        status: "active",
-        avatarColor: "#A9C7E8",
-      },
-    ],
-  },
-  {
-    id: "0006",
-    name: "Emma Castro",
-    birthDate: "2023-04-15",
-    room: "Soles",
-    enrollmentLabel: "mar 2025",
-    avatarColor: "#F4B8CC",
-    avatarTextColor: "#C44A7A",
-    parents: [
-      {
-        name: "Ana Castro",
-        roleLabel: "Mamá",
-        status: "active",
-        avatarColor: "#F4B8CC",
-      },
-    ],
-  },
-  {
-    id: "0007",
-    name: "Lucas Romero",
-    birthDate: "2022-12-01",
-    room: "Soles",
-    enrollmentLabel: "feb 2025",
-    avatarColor: "#A9D9E8",
-    avatarTextColor: "#1F7A93",
-    parents: [
-      {
-        name: "Javier Romero",
-        roleLabel: "Papá",
-        status: "active",
-        avatarColor: "#A9D9E8",
-      },
-    ],
-  },
-  {
-    id: "0008",
-    name: "Olivia Vega",
-    birthDate: "2023-08-09",
-    room: "Soles",
-    enrollmentLabel: "abr 2025",
-    avatarColor: "#B9DEC4",
-    avatarTextColor: "#3E8B62",
-    parents: [
-      {
-        name: "Elena Vega",
-        roleLabel: "Mamá",
-        status: "active",
-        avatarColor: "#B9DEC4",
-      },
-    ],
-  },
-];
+const loadActiveKidsAndRooms = cache(async (): Promise<KidsAndRooms> => {
+  const supabase = await createClient();
 
-export function getAgeLabel(birthDate: string): string {
-  const [birthYear, birthMonth, birthDay] = birthDate.split("-").map(Number);
-  const today = new Date();
-  let age = today.getFullYear() - birthYear;
+  const [
+    { data: roomsData, error: roomsError },
+    { data: childrenData, error: childrenError },
+  ] = await Promise.all([
+    supabase.from("rooms").select("id, name").order("name", { ascending: true }),
+    supabase
+      .from("children")
+      .select(
+        "id, room_id, full_name, birth_date, enrolled_at, medical_notes, allergy_tags, photo_consent, status",
+      )
+      .eq("status", "active")
+      .order("full_name", { ascending: true }),
+  ]);
 
-  if (
-    today.getMonth() + 1 < birthMonth ||
-    (today.getMonth() + 1 === birthMonth && today.getDate() < birthDay)
-  ) {
-    age -= 1;
+  if (roomsError) {
+    throw new Error(`Could not load rooms: ${roomsError.message}`);
   }
 
-  return `${age} ${age === 1 ? "año" : "años"}`;
+  if (childrenError) {
+    throw new Error(`Could not load children: ${childrenError.message}`);
+  }
+
+  const roomRows = (roomsData ?? []) as RoomRow[];
+  const childRows = (childrenData ?? []) as ChildRow[];
+  const roomNamesById = new Map(roomRows.map((room) => [room.id, room.name]));
+  const kidCountByRoomId = new Map<string, number>();
+  const kids: KidRecord[] = [];
+
+  for (const child of childRows) {
+    const roomName = roomNamesById.get(child.room_id);
+
+    if (!roomName) {
+      continue;
+    }
+
+    kids.push({
+      id: child.id,
+      fullName: child.full_name,
+      birthDate: child.birth_date,
+      roomName,
+      enrolledAt: child.enrolled_at,
+      allergyTags: child.allergy_tags ?? [],
+      medicalNotes: child.medical_notes ?? null,
+      photoConsent: child.photo_consent,
+      status: child.status,
+    });
+
+    kidCountByRoomId.set(
+      child.room_id,
+      (kidCountByRoomId.get(child.room_id) ?? 0) + 1,
+    );
+  }
+
+  const rooms: RoomRecord[] = roomRows.map((room) => ({
+    id: room.id,
+    name: room.name,
+    kidCount: kidCountByRoomId.get(room.id) ?? 0,
+  }));
+
+  return { rooms, kids };
+});
+
+export async function getKids(): Promise<KidRecord[]> {
+  const { kids } = await loadActiveKidsAndRooms();
+  return kids;
 }
 
-export function formatBirthDate(birthDate: string): string {
-  const [year, month, day] = birthDate.split("-");
-  const monthLabels = [
-    "ene",
-    "feb",
-    "mar",
-    "abr",
-    "may",
-    "jun",
-    "jul",
-    "ago",
-    "sep",
-    "oct",
-    "nov",
-    "dic",
-  ];
-
-  return `${Number(day)} ${monthLabels[Number(month) - 1]} ${year}`;
+export async function getRooms(): Promise<RoomRecord[]> {
+  const { rooms } = await loadActiveKidsAndRooms();
+  return rooms;
 }
 
-export const parentStatusLabels: Record<ParentStatus, string> = {
-  active: "ACTIVA",
-  pending: "PENDIENTE",
-};
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function getKidById(id: string): Promise<KidRecord | null> {
+  if (!uuidPattern.test(id)) {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("children")
+    .select(
+      "id, room_id, full_name, birth_date, enrolled_at, medical_notes, allergy_tags, photo_consent, status, rooms(name)",
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const child = data as ChildRow & { rooms: { name: string }[] | null };
+  const roomName = child.rooms?.[0]?.name;
+
+  if (!roomName) {
+    return null;
+  }
+
+  return {
+    id: child.id,
+    fullName: child.full_name,
+    birthDate: child.birth_date,
+    roomName,
+    enrolledAt: child.enrolled_at,
+    allergyTags: child.allergy_tags ?? [],
+    medicalNotes: child.medical_notes ?? null,
+    photoConsent: child.photo_consent,
+    status: child.status,
+  };
+}
+
+export function kidRecordToKid(record: KidRecord): Kid {
+  return {
+    id: record.id,
+    name: record.fullName,
+    birthDate: record.birthDate,
+    room: record.roomName,
+    enrollmentLabel: getEnrollmentLabel(
+      new Date(`${record.enrolledAt}T00:00:00`),
+    ),
+    allergyLabel:
+      record.allergyTags.length > 0
+        ? record.allergyTags.join(", ").toLocaleUpperCase("es")
+        : undefined,
+    allergyNotes: record.medicalNotes ?? undefined,
+    ...fallbackAvatar,
+    parents: [],
+  };
+}

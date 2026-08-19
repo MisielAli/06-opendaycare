@@ -1,21 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  roomOptions,
-  type AddKidFormValues,
-  type RoomName,
-} from "@/app/lib/kids";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { addKid, type AddKidActionState } from "@/app/actions/kids";
+import type { AddKidFormValues, RoomRecord } from "@/app/lib/kids-shared";
 
 const initialValues: AddKidFormValues = {
   fullName: "",
   birthDate: "",
-  room: "",
+  roomId: "",
   allergyTags: "",
   medicalNotes: "",
 };
 
-type FormErrors = Partial<Record<"fullName" | "birthDate" | "room", string>>;
+const initialActionState: AddKidActionState = { status: "idle" };
+
+type FormErrors = Partial<Record<"fullName" | "birthDate" | "roomId", string>>;
 
 function formatDateInput(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 8);
@@ -24,6 +24,16 @@ function formatDateInput(value: string) {
   );
 
   return parts.join("/");
+}
+
+function toIsoDate(value: string) {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (!match) {
+    return "";
+  }
+
+  const [, day, month, year] = match;
+  return `${year}-${month}-${day}`;
 }
 
 function isValidBirthDate(value: string) {
@@ -51,20 +61,40 @@ function validate(values: AddKidFormValues): FormErrors {
     ...(isValidBirthDate(values.birthDate)
       ? {}
       : { birthDate: "Ingresa una fecha válida que no sea futura." }),
-    ...(values.room ? {} : { room: "Selecciona una sala." }),
+    ...(values.roomId ? {} : { roomId: "Selecciona una sala." }),
   };
 }
 
 interface AddKidModalProps {
+  rooms: RoomRecord[];
   onClose: () => void;
-  onSave: (values: AddKidFormValues) => void;
 }
 
-export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
+export function AddKidModal({ rooms, onClose }: AddKidModalProps) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [actionState, formAction, isPending] = useActionState(
+    addKid,
+    initialActionState,
+  );
+  const router = useRouter();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const serverFieldErrors =
+    actionState.status === "error" ? actionState.fieldErrors ?? {} : {};
+  const fullNameError = errors.fullName ?? serverFieldErrors.fullName;
+  const birthDateError = errors.birthDate ?? serverFieldErrors.birthDate;
+  const roomIdError = errors.roomId ?? serverFieldErrors.roomId;
+
+  useEffect(() => {
+    if (actionState.status !== "success") {
+      return;
+    }
+
+    router.refresh();
+    onClose();
+  }, [actionState.status, onClose, router]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -86,14 +116,14 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
     const nextErrors = validate(values);
     if (Object.keys(nextErrors).length > 0) {
+      event.preventDefault();
       setErrors(nextErrors);
       return;
     }
 
-    onSave({ ...values, fullName: values.fullName.trim() });
+    setErrors({});
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -141,7 +171,7 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
         onKeyDown={handleKeyDown}
         className="max-h-full w-full max-w-[520px] overflow-y-auto rounded-[24px] border border-border-soft bg-auth-background shadow-[0_20px_50px_-24px_rgba(63,54,46,.55)]"
       >
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} action={formAction} noValidate>
           <div className="flex items-center justify-between border-b border-border-soft px-5 py-5 sm:px-[26px]">
             <button type="button" onClick={onClose} className="text-[15px] font-bold text-text-muted focus-visible:rounded focus-visible:outline-2 focus-visible:outline-primary">
               Cancelar
@@ -149,24 +179,31 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
             <h2 id="add-kid-title" className="font-display text-[18px] font-semibold text-foreground">
               Agregar niño
             </h2>
-            <button type="submit" className="text-[15px] font-extrabold text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-primary">
-              Guardar
+            <button type="submit" disabled={isPending} className="text-[15px] font-extrabold text-primary focus-visible:rounded focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-60">
+              {isPending ? "Guardando…" : "Guardar"}
             </button>
           </div>
 
           <div className="space-y-[18px] p-5 sm:p-[26px]">
+            {actionState.status === "error" && actionState.formError ? (
+              <p role="alert" className="rounded-[14px] bg-[#FBD8CC] px-4 py-3 text-[13.5px] font-bold text-[#D9684A]">
+                {actionState.formError}
+              </p>
+            ) : null}
+
             <FieldLabel label="Nombre completo" htmlFor="kid-full-name" />
             <input
               ref={nameInputRef}
               id="kid-full-name"
+              name="fullName"
               value={values.fullName}
               onChange={(event) => updateValue("fullName", event.target.value)}
-              aria-invalid={Boolean(errors.fullName)}
-              aria-describedby={errors.fullName ? "kid-full-name-error" : undefined}
+              aria-invalid={Boolean(fullNameError)}
+              aria-describedby={fullNameError ? "kid-full-name-error" : undefined}
               placeholder="Ej. Martina López"
-              className={inputClassName(errors.fullName)}
+              className={inputClassName(fullNameError)}
             />
-            <FieldError id="kid-full-name-error" message={errors.fullName} />
+            <FieldError id="kid-full-name-error" message={fullNameError} />
 
             <div className="grid gap-[18px] sm:grid-cols-2 sm:gap-[14px]">
               <div>
@@ -176,27 +213,29 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
                   inputMode="numeric"
                   value={values.birthDate}
                   onChange={(event) => updateValue("birthDate", formatDateInput(event.target.value))}
-                  aria-invalid={Boolean(errors.birthDate)}
-                  aria-describedby={errors.birthDate ? "kid-birth-date-error" : undefined}
+                  aria-invalid={Boolean(birthDateError)}
+                  aria-describedby={birthDateError ? "kid-birth-date-error" : undefined}
                   placeholder="dd/mm/aaaa"
-                  className={inputClassName(errors.birthDate)}
+                  className={inputClassName(birthDateError)}
                 />
-                <FieldError id="kid-birth-date-error" message={errors.birthDate} />
+                <FieldError id="kid-birth-date-error" message={birthDateError} />
+                <input type="hidden" name="birthDate" value={toIsoDate(values.birthDate)} />
               </div>
               <div>
                 <FieldLabel label="Sala" htmlFor="kid-room" />
                 <select
                   id="kid-room"
-                  value={values.room}
-                  onChange={(event) => updateValue("room", event.target.value as RoomName | "")}
-                  aria-invalid={Boolean(errors.room)}
-                  aria-describedby={errors.room ? "kid-room-error" : undefined}
-                  className={inputClassName(errors.room)}
+                  name="roomId"
+                  value={values.roomId}
+                  onChange={(event) => updateValue("roomId", event.target.value)}
+                  aria-invalid={Boolean(roomIdError)}
+                  aria-describedby={roomIdError ? "kid-room-error" : undefined}
+                  className={inputClassName(roomIdError)}
                 >
                   <option value="" disabled>Seleccionar</option>
-                  {roomOptions.map(({ name }) => <option key={name} value={name}>{name}</option>)}
+                  {rooms.map((room) => <option key={room.id} value={room.id}>{room.name}</option>)}
                 </select>
-                <FieldError id="kid-room-error" message={errors.room} />
+                <FieldError id="kid-room-error" message={roomIdError} />
               </div>
             </div>
 
@@ -204,6 +243,7 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
               <FieldLabel label="Alergias (etiquetas)" htmlFor="kid-allergies" />
               <input
                 id="kid-allergies"
+                name="allergyTags"
                 value={values.allergyTags}
                 onChange={(event) => updateValue("allergyTags", event.target.value)}
                 placeholder="Ej. Maní, Lactosa"
@@ -215,6 +255,7 @@ export function AddKidModal({ onClose, onSave }: AddKidModalProps) {
               <FieldLabel label="Notas médicas" htmlFor="kid-medical-notes" />
               <textarea
                 id="kid-medical-notes"
+                name="medicalNotes"
                 value={values.medicalNotes}
                 onChange={(event) => updateValue("medicalNotes", event.target.value)}
                 placeholder="Indicaciones, medicación, contactos…"

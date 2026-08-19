@@ -1,25 +1,38 @@
 import { requireStaff } from "@/app/lib/auth";
-import { formatBirthDate, getAgeLabel, kids } from "@/app/lib/kids";
+import {
+  formatBirthDate,
+  getAgeLabel,
+  getKidById,
+  kidRecordToKid,
+} from "@/app/lib/kids";
+import type { ParentLink } from "@/app/lib/kids-shared";
 import { AllergyAlert } from "@/components/kids/AllergyAlert";
 import { ParentsPanel } from "@/components/kids/ParentsPanel";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return kids.map((kid) => ({ id: kid.id }));
-}
+const demoParents: ParentLink[] = [
+  {
+    name: "Lucía Fernández",
+    roleLabel: "Mamá",
+    status: "active",
+    avatarColor: "#C9B6E8",
+  },
+];
 
 export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
   const { id } = await props.params;
   await requireStaff(`/kids/${encodeURIComponent(id)}`);
 
-  const kid = kids.find((candidate) => candidate.id === id);
+  const kidRecord = await getKidById(id);
 
-  if (!kid) {
+  if (!kidRecord) {
     notFound();
   }
+
+  const kid = kidRecordToKid(kidRecord);
 
   return (
     <div className="mx-auto w-full max-w-[820px] px-6 pb-20 pt-16 md:px-10 md:pt-[34px]">
@@ -98,7 +111,7 @@ export default async function KidProfilePage(props: PageProps<"/kids/[id]">) {
             </svg>
             Resumen del día
           </button>
-          <ParentsPanel kidName={kid.name} parents={kid.parents} />
+          <ParentsPanel kidName={kid.name} parents={demoParents} />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import type { Kid } from "@/app/lib/kids";
+import type { Kid } from "@/app/lib/kids-shared";
 import Link from "next/link";
 
 function getParentsLabel(parentCount: number) {
