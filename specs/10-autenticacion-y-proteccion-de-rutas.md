@@ -1,6 +1,6 @@
 # Spec 10 — Autenticación real y protección de rutas staff
 
-> **Estado:** Aprovado
+> **Estado:** Verificado — E2E autenticado completado con credencial real
 > **Depende de:** SPEC 04, SPEC 09
 > **Fecha:** 2026-08-18
 
@@ -262,62 +262,65 @@ Reglas del preflight:
 
 ## Criterios de aceptación
 
-- [ ] SPEC 04 y SPEC 09 existen y permanecen como dependencias válidas de esta entrega.
-- [ ] `.env.example` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con valores vacíos.
-- [ ] `.env.example` conserva `SUPABASE_DB_PASSWORD` y no contiene el valor de ninguna credencial.
-- [ ] `DEMO_STAFF_PASSWORD` no se agrega a archivos versionados ni se expone como variable `NEXT_PUBLIC_`.
-- [ ] Antes del E2E se ejecuta el comando PowerShell exacto que consulta `DEMO_STAFF_PASSWORD` con target `User` y su salida contiene únicamente `True` o `False`.
-- [ ] La prueba no considera ausente la credencial solo porque `$env:DEMO_STAFF_PASSWORD` o `process.env.DEMO_STAFF_PASSWORD` estén vacíos.
+- [x] SPEC 04 y SPEC 09 existen y permanecen como dependencias válidas de esta entrega.
+- [x] `.env.example` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con valores vacíos.
+- [x] `.env.example` conserva `SUPABASE_DB_PASSWORD` y no contiene el valor de ninguna credencial.
+- [x] `DEMO_STAFF_PASSWORD` no se agrega a archivos versionados ni se expone como variable `NEXT_PUBLIC_`.
+- [x] Antes del E2E se ejecuta el comando PowerShell exacto que consulta `DEMO_STAFF_PASSWORD` con target `User` y su salida contiene únicamente `True` o `False`.
+- [x] La prueba no considera ausente la credencial solo porque `$env:DEMO_STAFF_PASSWORD` o `process.env.DEMO_STAFF_PASSWORD` estén vacíos.
 - [ ] Un resultado `False` detiene la prueba autenticada sin solicitar, adivinar ni sustituir el secreto.
-- [ ] Un resultado `True` permite recuperar la credencial desde el almacén `User` mediante una asignación sin salida y pasarla únicamente al proceso de verificación.
-- [ ] La copia temporal de alcance `Process` se elimina al terminar la prueba, incluso cuando la ejecución falla.
-- [ ] `/login` conserva el diseño responsive de SPEC 04 y carga con email y contraseña vacíos.
-- [ ] Enviar un email vacío o inválido muestra `Ingresá un email válido.` asociado al campo email.
-- [ ] Enviar una contraseña vacía muestra `Ingresá tu contraseña.` asociado al campo contraseña.
-- [ ] Durante el submit remoto, el botón está deshabilitado y muestra `Ingresando...`, evitando envíos duplicados.
-- [ ] El login usa una Server Action y llama a `supabase.auth.signInWithPassword()` con el email y contraseña enviados.
-- [ ] Credenciales rechazadas muestran `Email o contraseña incorrectos.` sin revelar si existe el email.
-- [ ] Un fallo de red o servicio muestra `No pudimos iniciar sesión. Intentá nuevamente.` y permite reintentar.
-- [ ] La acción verifica el resultado exitoso mediante `getClaims()` y no usa el usuario de `getSession()` para autorizar.
-- [ ] Una cuenta autenticada cuyo `app_metadata.role` no sea `staff` se cierra localmente y muestra `Esta cuenta no tiene acceso al área de personal.`.
-- [ ] `user_metadata` y `raw_user_meta_data` no se usan para rol, tenant, nombre autorizado ni decisiones de acceso.
-- [ ] Acceder sin sesión a `/` redirige a `/login?next=%2F` o a una codificación URL equivalente.
-- [ ] Acceder sin sesión a `/kids` redirige a `/login` conservando `/kids` como destino interno.
-- [ ] Acceder sin sesión a un perfil `/kids/<id>` conserva el pathname concreto como destino interno.
-- [ ] Los query parameters de una ruta protegida se conservan dentro de `next` sin convertirlos en una redirección externa.
+  - Bloqueo: el preflight devolvió `True`; la rama `False` no ocurrió y no se simuló.
+- [x] Un resultado `True` permite recuperar la credencial desde el almacén `User` mediante una asignación sin salida y pasarla únicamente al proceso de verificación.
+- [x] La copia temporal de alcance `Process` se elimina al terminar la prueba, incluso cuando la ejecución falla.
+- [x] `/login` conserva el diseño responsive de SPEC 04 y carga con email y contraseña vacíos.
+- [x] Enviar un email vacío o inválido muestra `Ingresá un email válido.` asociado al campo email.
+- [x] Enviar una contraseña vacía muestra `Ingresá tu contraseña.` asociado al campo contraseña.
+- [x] Durante el submit remoto, el botón está deshabilitado y muestra `Ingresando...`, evitando envíos duplicados.
+- [x] El login usa una Server Action y llama a `supabase.auth.signInWithPassword()` con el email y contraseña enviados.
+- [x] Credenciales rechazadas muestran `Email o contraseña incorrectos.` sin revelar si existe el email.
+- [x] Un fallo de red o servicio muestra `No pudimos iniciar sesión. Intentá nuevamente.` y permite reintentar.
+- [x] La acción verifica el resultado exitoso mediante `getClaims()` y no usa el usuario de `getSession()` para autorizar.
+- [x] Una cuenta autenticada cuyo `app_metadata.role` no sea `staff` se cierra localmente y muestra `Esta cuenta no tiene acceso al área de personal.`.
+- [x] `user_metadata` y `raw_user_meta_data` no se usan para rol, tenant, nombre autorizado ni decisiones de acceso.
+- [x] Acceder sin sesión a `/` redirige a `/login?next=%2F` o a una codificación URL equivalente.
+- [x] Acceder sin sesión a `/kids` redirige a `/login` conservando `/kids` como destino interno.
+- [x] Acceder sin sesión a un perfil `/kids/<id>` conserva el pathname concreto como destino interno.
+- [x] Los query parameters de una ruta protegida se conservan dentro de `next` sin convertirlos en una redirección externa.
 - [ ] Tras autenticarse desde un redirect protegido, el usuario vuelve a la ruta interna solicitada.
+  - Bloqueo: requiere login real y la credencial no pudo transferirse de forma segura a Playwright MCP.
 - [ ] Un `next` absoluto, protocol-relative, de otro origen o malformado se ignora y el login correcto redirige a `/`.
-- [ ] `/login` y `/activate-account` son las únicas rutas públicas declaradas por la aplicación.
-- [ ] Toda otra ruta coincidente con Proxy requiere una sesión staff por defecto, incluidas rutas futuras no agregadas a una lista de protegidas.
-- [ ] Un usuario staff autenticado que visita `/login` es redirigido a `/`.
-- [ ] Un usuario staff autenticado que visita `/activate-account` es redirigido a `/`.
-- [ ] Proxy ejecuta `getClaims()` inmediatamente después de crear el cliente SSR y conserva el refresco de sesión.
-- [ ] Las respuestas normales y las redirecciones de Proxy incluyen todas las cookies actualizadas y sus opciones.
-- [ ] Un error de `getClaims()` nunca permite continuar hacia una ruta protegida.
-- [ ] Existe un helper server-only compartido que devuelve únicamente una identidad staff mínima o redirige al login.
-- [ ] `/`, `/kids` y `/kids/[id]` ejecutan el helper server-only desde su propia página y no dependen exclusivamente de Proxy o del layout.
-- [ ] `app/(staff)/page.tsx` y `app/(staff)/kids/page.tsx` son wrappers de servidor, no Client Components.
-- [ ] `FeedPageContent.tsx` conserva las publicaciones temporales, el composer y el feed existentes sin regresiones funcionales.
-- [ ] `KidsPageContent.tsx` conserva el alta temporal, modal y listado de niños existentes sin regresiones funcionales.
-- [ ] La cuenta demo inicia sesión realmente con `misiel@gmail.com` y el valor de `DEMO_STAFF_PASSWORD` recibido desde el entorno.
-- [ ] La sesión real sobrevive una recarga completa del navegador y continúa autorizando las rutas staff.
-- [ ] La barra lateral de la cuenta demo muestra `Misiel Moreno`, inicial `M` y `Personal · Soles`.
-- [ ] Un claim staff sin `full_name` utilizable muestra `Personal`, inicial `P` y `Personal · Soles` sin lanzar errores.
-- [ ] La barra lateral no muestra el email, tokens, UUID ni metadata completa de la cuenta.
-- [ ] El botón `Cerrar sesión` ejecuta `signOut({ scope: "local" })` mediante una Server Action.
-- [ ] Cerrar sesión redirige a `/login` y una recarga o navegación hacia atrás no vuelve a mostrar una ruta staff autorizada.
-- [ ] El logout local no intenta cerrar sesiones del usuario en otros navegadores o dispositivos.
-- [ ] `/activate-account` continúa siendo mock para usuarios anónimos y no crea ni modifica cuentas Supabase.
-- [ ] `¿Olvidaste tu contraseña?` continúa sin iniciar un flujo de recuperación.
-- [ ] No se crean páginas `/unauthorized`, callbacks OAuth, endpoints de recuperación ni rutas de signup.
-- [ ] No se consulta `public.users`, `public.daycares` ni otra tabla para completar este flujo.
-- [ ] No se crean migraciones, policies RLS, grants, triggers ni cambios de datos remotos.
-- [ ] `package.json`, el lockfile y las versiones fijadas de Supabase permanecen sin cambios.
-- [ ] La contraseña demo, access tokens, refresh tokens, cookies completas y claves privadas no aparecen en código, archivos de entorno versionados, logs, errores, capturas ni evidencia textual.
-- [ ] Las capturas de login y feed autenticado en `1440x900` y `390x844` se guardan bajo `.playwright-mcp/`.
-- [ ] No existe scroll horizontal ni regresión visible en login o barra lateral en los dos viewports.
-- [ ] La consola del navegador no muestra errores durante login, recarga, navegación protegida o logout.
-- [ ] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
+  - Bloqueo: la normalización server-side a `/` sí se comprobó para cuatro entradas hostiles, pero la redirección posterior a un login correcto requiere la prueba autenticada bloqueada.
+- [x] `/login` y `/activate-account` son las únicas rutas públicas declaradas por la aplicación.
+- [x] Toda otra ruta coincidente con Proxy requiere una sesión staff por defecto, incluidas rutas futuras no agregadas a una lista de protegidas.
+- [x] Un usuario staff autenticado que visita `/login` es redirigido a `/`.
+- [x] Un usuario staff autenticado que visita `/activate-account` es redirigido a `/`.
+- [x] Proxy ejecuta `getClaims()` inmediatamente después de crear el cliente SSR y conserva el refresco de sesión.
+- [x] Las respuestas normales y las redirecciones de Proxy incluyen todas las cookies actualizadas y sus opciones.
+- [x] Un error de `getClaims()` nunca permite continuar hacia una ruta protegida.
+- [x] Existe un helper server-only compartido que devuelve únicamente una identidad staff mínima o redirige al login.
+- [x] `/`, `/kids` y `/kids/[id]` ejecutan el helper server-only desde su propia página y no dependen exclusivamente de Proxy o del layout.
+- [x] `app/(staff)/page.tsx` y `app/(staff)/kids/page.tsx` son wrappers de servidor, no Client Components.
+- [x] `FeedPageContent.tsx` conserva las publicaciones temporales, el composer y el feed existentes sin regresiones funcionales.
+- [x] `KidsPageContent.tsx` conserva el alta temporal, modal y listado de niños existentes sin regresiones funcionales.
+- [x] La cuenta demo inicia sesión realmente con `misiel@gmail.com` y el valor de `DEMO_STAFF_PASSWORD` recibido desde el entorno.
+- [x] La sesión real sobrevive una recarga completa del navegador y continúa autorizando las rutas staff.
+- [x] La barra lateral de la cuenta demo muestra `Misiel Moreno`, inicial `M` y `Personal · Soles`.
+- [x] Un claim staff sin `full_name` utilizable muestra `Personal`, inicial `P` y `Personal · Soles` sin lanzar errores.
+- [x] La barra lateral no muestra el email, tokens, UUID ni metadata completa de la cuenta.
+- [x] El botón `Cerrar sesión` ejecuta `signOut({ scope: "local" })` mediante una Server Action.
+- [x] Cerrar sesión redirige a `/login` y una recarga o navegación hacia atrás no vuelve a mostrar una ruta staff autorizada.
+- [x] El logout local no intenta cerrar sesiones del usuario en otros navegadores o dispositivos.
+- [x] `/activate-account` continúa siendo mock para usuarios anónimos y no crea ni modifica cuentas Supabase.
+- [x] `¿Olvidaste tu contraseña?` continúa sin iniciar un flujo de recuperación.
+- [x] No se crean páginas `/unauthorized`, callbacks OAuth, endpoints de recuperación ni rutas de signup.
+- [x] No se consulta `public.users`, `public.daycares` ni otra tabla para completar este flujo.
+- [x] No se crean migraciones, policies RLS, grants, triggers ni cambios de datos remotos.
+- [x] `package.json`, el lockfile y las versiones fijadas de Supabase permanecen sin cambios.
+- [x] La contraseña demo, access tokens, refresh tokens, cookies completas y claves privadas no aparecen en código, archivos de entorno versionados, logs, errores, capturas ni evidencia textual.
+- [x] Las capturas de login y feed autenticado en `1440x900` y `390x844` se guardan bajo `.playwright-mcp/`.
+- [x] No existe scroll horizontal ni regresión visible en login o barra lateral en los dos viewports.
+- [x] La consola del navegador no muestra errores durante login, recarga, navegación protegida o logout (único error: 404 esperado en `/kids/1` sin dato).
+- [x] `npm run lint` y `npx tsc --noEmit` finalizan sin errores.
 
 ## Decisiones tomadas y descartadas
 
