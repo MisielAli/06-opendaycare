@@ -8,29 +8,27 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { kids, type Kid, type TempKid } from "@/app/lib/kids";
+import { type Kid } from "@/app/lib/kids-shared";
 import { type Post } from "@/app/lib/posts";
 
 interface StaffContextValue {
   kids: Kid[];
-  temporaryKids: TempKid[];
   temporaryPosts: Post[];
   lastPublishedPostId: string | null;
   isComposerOpen: boolean;
   openComposer: () => void;
   closeComposer: () => void;
-  addTemporaryKid: (kid: TempKid) => void;
   addTemporaryPost: (post: Post) => void;
 }
 
 const StaffContext = createContext<StaffContextValue | null>(null);
 
 interface StaffProviderProps {
+  kids: Kid[];
   children: ReactNode;
 }
 
-export function StaffProvider({ children }: StaffProviderProps) {
-  const [temporaryKids, setTemporaryKids] = useState<TempKid[]>([]);
+export function StaffProvider({ kids, children }: StaffProviderProps) {
   const [temporaryPosts, setTemporaryPosts] = useState<Post[]>([]);
   const [lastPublishedPostId, setLastPublishedPostId] = useState<string | null>(null);
   const [isComposerOpen, setIsComposerOpen] = useState(false);
@@ -58,10 +56,6 @@ export function StaffProvider({ children }: StaffProviderProps) {
     setIsComposerOpen(false);
   }
 
-  function addTemporaryKid(kid: TempKid) {
-    setTemporaryKids((currentKids) => [kid, ...currentKids]);
-  }
-
   function addTemporaryPost(post: Post) {
     setTemporaryPosts((currentPosts) => [post, ...currentPosts]);
     setLastPublishedPostId(post.id);
@@ -70,14 +64,12 @@ export function StaffProvider({ children }: StaffProviderProps) {
   return (
     <StaffContext.Provider
       value={{
-        kids: [...temporaryKids, ...kids],
-        temporaryKids,
+        kids,
         temporaryPosts,
         lastPublishedPostId,
         isComposerOpen,
         openComposer,
         closeComposer,
-        addTemporaryKid,
         addTemporaryPost,
       }}
     >

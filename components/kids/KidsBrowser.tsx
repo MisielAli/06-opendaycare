@@ -1,20 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import {
-  getAgeLabel,
-  roomOptions,
-  type Kid,
-} from "@/app/lib/kids";
+import { getAgeLabel, type Kid, type RoomRecord } from "@/app/lib/kids-shared";
 import { KidCard } from "./KidCard";
 
-export function KidsBrowser({ kids, latestAddedKidId }: { kids: Kid[]; latestAddedKidId?: string }) {
-  const [search, setSearch] = useState({ query: "", latestAddedKidId });
-  const query = search.latestAddedKidId === latestAddedKidId ? search.query : "";
-  const normalizedQuery = query.trim().toLocaleLowerCase("es");
+interface KidsBrowserProps {
+  rooms: RoomRecord[];
+  kids: Kid[];
+}
+
+export function KidsBrowser({ rooms, kids }: KidsBrowserProps) {
+  const [search, setSearch] = useState("");
+  const [collapsedRoomIds, setCollapsedRoomIds] = useState<string[]>([]);
+
+  const normalizedQuery = search.trim().toLocaleLowerCase("es");
+  const isSearching = normalizedQuery.length > 0;
   const filteredKids = kids.filter((kid) =>
     kid.name.toLocaleLowerCase("es").includes(normalizedQuery),
   );
+
+  function toggleRoom(roomId: string) {
+    setCollapsedRoomIds((currentIds) =>
+      currentIds.includes(roomId)
+        ? currentIds.filter((id) => id !== roomId)
+        : [...currentIds, roomId],
+    );
+  }
+
+  if (kids.length === 0 && !isSearching) {
+    return (
+      <p className="rounded-[14px] border border-border-soft bg-card px-4 py-6 text-center text-[14.5px] text-text-muted">
+        Todavía no hay niños cargados. Tocá “Agregar niño” para dar de alta el
+        primero.
+      </p>
+    );
+  }
 
   return (
     <>
@@ -36,8 +56,8 @@ export function KidsBrowser({ kids, latestAddedKidId }: { kids: Kid[]; latestAdd
         <span className="sr-only">Buscar niño</span>
         <input
           type="search"
-          value={query}
-          onChange={(event) => setSearch({ query: event.target.value, latestAddedKidId })}
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           placeholder="Buscar niño…"
           className="min-w-0 flex-1 border-0 bg-transparent text-[15px] text-foreground outline-none placeholder:text-[#B6A99B]"
         />
@@ -45,19 +65,62 @@ export function KidsBrowser({ kids, latestAddedKidId }: { kids: Kid[]; latestAdd
 
       {filteredKids.length > 0 ? (
         <div className="space-y-7">
-          {roomOptions.map(({ name }) => {
-            const roomKids = filteredKids.filter((kid) => kid.room === name);
-            if (roomKids.length === 0) return null;
+          {rooms.map((room) => {
+            const roomKids = filteredKids.filter((kid) => kid.room === room.name);
+            if (isSearching && roomKids.length === 0) return null;
+
+            const isCollapsed = collapsedRoomIds.includes(room.id);
+            const roomGridId = `room-kids-${room.id}`;
 
             return (
-              <section key={name}>
+              <section key={room.id} aria-labelledby={`room-heading-${room.id}`}>
                 <div className="mb-3.5 flex items-center gap-3">
-                  <h2 className="text-[12.5px] font-extrabold tracking-[0.8px] text-foreground">SALA {name.toUpperCase()}</h2>
-                  <span className="text-[13px] text-text-soft">{roomKids.length} {roomKids.length === 1 ? "niño" : "niños"}</span>
+                  <h2
+                    id={`room-heading-${room.id}`}
+                    className="text-[12.5px] font-extrabold tracking-[0.8px] text-foreground"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleRoom(room.id)}
+                      aria-expanded={!isCollapsed}
+                      aria-controls={roomGridId}
+                      className="flex items-center gap-3 rounded focus-visible:outline-2 focus-visible:outline-primary"
+                    >
+                      SALA {room.name.toUpperCase()}
+                      <span className="text-[13px] font-normal tracking-normal text-text-soft">
+                        {roomKids.length} {roomKids.length === 1 ? "niño" : "niños"}
+                      </span>
+                      <svg
+                        className={`flex-none text-[#B0A290] transition-transform duration-150 ${isCollapsed ? "-rotate-90" : ""}`}
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                  </h2>
                   <span className="h-px flex-1 bg-divider" />
                 </div>
-                <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
-                  {roomKids.map((kid) => <KidCard key={kid.id} kid={kid} ageLabel={getAgeLabel(kid.birthDate)} disableNavigation={kid.id.startsWith("temp-")} />)}
+                <div
+                  id={roomGridId}
+                  className="grid grid-cols-1 gap-3.5 md:grid-cols-2"
+                >
+                  {!isCollapsed
+                    ? roomKids.map((kid) => (
+                        <KidCard
+                          key={kid.id}
+                          kid={kid}
+                          ageLabel={getAgeLabel(kid.birthDate)}
+                        />
+                      ))
+                    : null}
                 </div>
               </section>
             );

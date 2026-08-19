@@ -5,7 +5,7 @@ import {
   parentStatusLabels,
   pendingParentAvatarColor,
   type ParentLink,
-} from "@/app/lib/kids";
+} from "@/app/lib/kids-shared";
 import { LinkParentModal } from "@/components/kids/LinkParentModal";
 
 function getParentDetails(parent: ParentLink) {
