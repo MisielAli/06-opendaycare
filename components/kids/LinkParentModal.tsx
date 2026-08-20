@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { LinkParentFormValues, ParentRole } from "@/app/lib/kids-shared";
+import { inviteParent } from "@/app/actions/invitations";
 
 const initialValues: LinkParentFormValues = {
   fullName: "",
@@ -25,15 +26,18 @@ function validate(values: LinkParentFormValues): FormErrors {
 
 interface LinkParentModalProps {
   kidName: string;
+  childId: string;
   openerRef: React.RefObject<HTMLButtonElement | null>;
   onClose: () => void;
-  onSubmit: (values: Pick<LinkParentFormValues, "fullName" | "roleLabel">) => void;
+  onSuccess: (values: { fullName: string; roleLabel: ParentRole }) => void;
 }
 
-export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkParentModalProps) {
+export function LinkParentModal({ kidName, childId, openerRef, onClose, onSuccess }: LinkParentModalProps) {
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Partial<Record<keyof LinkParentFormValues, boolean>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [generalError, setGeneralError] = useState<string | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +59,7 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
   function updateValue<Key extends keyof LinkParentFormValues>(key: Key, value: LinkParentFormValues[Key]) {
     const nextValues = { ...values, [key]: value };
     setValues(nextValues);
+    if (generalError) setGeneralError(null);
 
     if (errors[key]) {
       setErrors((currentErrors) => ({
@@ -72,15 +77,49 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
     }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate(values);
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
+      setTouched({ fullName: true, email: true, roleLabel: true });
       return;
     }
 
-    onSubmit({ fullName: values.fullName.trim(), roleLabel: values.roleLabel });
+    setIsSubmitting(true);
+    setGeneralError(null);
+    try {
+      const result = await inviteParent({
+        childId,
+        fullName: values.fullName.trim(),
+        email: values.email.trim(),
+        relationship: values.roleLabel,
+      });
+
+      // Always add pending row, even if email failed (no rollback)
+      onSuccess({ fullName: values.fullName.trim(), roleLabel: values.roleLabel });
+
+      if (!result.emailSent) {
+        setGeneralError("Invitación creada pero el email no pudo enviarse. Reintentá.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "No se pudo enviar la invitación.";
+      // Map known validation messages to field errors if applicable
+      if (message.includes("nombre completo")) {
+        setErrors((prev) => ({ ...prev, fullName: message }));
+      } else if (message.includes("email válido")) {
+        setErrors((prev) => ({ ...prev, email: message }));
+      } else if (message.includes("parentesco")) {
+        setErrors((prev) => ({ ...prev, roleLabel: message }));
+      } else {
+        setGeneralError(message);
+      }
+      setIsSubmitting(false);
+    }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -170,15 +209,15 @@ export function LinkParentModal({ kidName, openerRef, onClose, onSubmit }: LinkP
               <FieldError id="parent-role-error" message={errors.roleLabel} />
             </fieldset>
 
-            <div className="mb-5 rounded-[16px] border-[1.5px] border-dashed border-[#E6D08A] bg-[#FBF1D6] p-[18px] text-center">
-              <div className="mb-2 text-[12px] font-extrabold tracking-[0.7px] text-[#A88526]">CÓDIGO DE INVITACIÓN</div>
-              <div className="font-display text-[34px] font-semibold tracking-[7px] text-[#8A7234]">7K4P9</div>
-              <div className="mt-1.5 text-[13px] text-[#A88526]">Vence en 7 días</div>
-            </div>
+            {generalError ? (
+              <p className="mb-4 rounded-[12px] bg-[#FBEDEC] px-4 py-3 text-[13.5px] font-bold text-primary" role="alert">
+                {generalError}
+              </p>
+            ) : null}
 
-            <button type="submit" className="flex w-full items-center justify-center gap-[9px] rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] px-4 py-[14px] text-[15.5px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] transition-all duration-200 hover:from-[#F5A48D] hover:to-[#EF8E75] hover:shadow-[0_14px_28px_-6px_rgba(238,129,100,.8)] hover:brightness-105 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-primary">
+            <button type="submit" disabled={isSubmitting} className="flex w-full items-center justify-center gap-[9px] rounded-[14px] bg-linear-to-b from-[#F4977E] to-[#EE8164] px-4 py-[14px] text-[15.5px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] transition-all duration-200 hover:from-[#F5A48D] hover:to-[#EF8E75] hover:shadow-[0_14px_28px_-6px_rgba(238,129,100,.8)] hover:brightness-105 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-60 disabled:cursor-not-allowed">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z" /><path d="M22 2 11 13" /></svg>
-              Enviar invitación
+              {isSubmitting ? "Enviando..." : "Enviar invitación"}
             </button>
           </div>
         </form>

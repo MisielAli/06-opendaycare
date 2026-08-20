@@ -1,7 +1,32 @@
 import { ActivateAccountForm } from "@/components/auth/ActivateAccountForm";
 import { BrandMark } from "@/components/auth/BrandMark";
+import { createClient } from "@/utils/supabase/server";
 
-export default function ActivateAccountPage() {
+interface PageProps {
+  searchParams: Promise<{ code?: string }>;
+}
+
+export default async function ActivateAccountPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const initialCode = typeof params.code === "string" ? params.code.trim().toUpperCase() : "";
+  let initialEmail = "";
+  let codeError: string | undefined;
+
+  if (initialCode) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("get_invitation_by_code", { p_code: initialCode });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) {
+      codeError = "Código inválido o expirado.";
+    } else if (row.status !== "pending") {
+      codeError = row.status === "accepted" ? "Esta invitación ya fue usada." : "Código inválido o expirado.";
+    } else if (new Date(row.expires_at) <= new Date()) {
+      codeError = "Código inválido o expirado.";
+    } else {
+      initialEmail = row.email ?? "";
+    }
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-auth-background px-6 py-10 sm:px-10">
       <div className="w-full max-w-[440px]">
@@ -28,7 +53,7 @@ export default function ActivateAccountPage() {
           </div>
         </section>
 
-        <ActivateAccountForm />
+        <ActivateAccountForm initialCode={initialCode} initialEmail={initialEmail} codeError={codeError} />
       </div>
     </main>
   );
