@@ -4,7 +4,6 @@ import "server-only";
 
 import { Resend } from "resend";
 
-import { ParentInvitationEmail } from "@/emails/ParentInvitation";
 import {
   relationshipToDB,
   type InviteParentInput,
@@ -165,24 +164,23 @@ export async function inviteParent(input: InviteParentInput): Promise<InvitePare
   } else {
     try {
       const resend = new Resend(resendApiKey);
+      // Usar html directo (más estable que react en dev) — template espejo de emails/ParentInvitation.tsx
+      const html = `<div style="font-family:system-ui,-apple-system,sans-serif;background:#FFFBF5;padding:32px;color:#3F362E"><div style="max-width:480px;margin:0 auto;background:#FFFFFF;border-radius:24px;border:1px solid #EDE6DD;overflow:hidden"><div style="padding:28px 28px 0 28px"><div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:14px;background:linear-gradient(to bottom right,#f8c3a8,#f2937a);color:#fff;font-weight:800;font-size:20px;margin-bottom:16px">OD</div><h1 style="margin:0;font-size:22px;font-weight:700;color:#3F362E;line-height:1.2">Te invitaron a OpenDaycare</h1><p style="margin:10px 0 0 0;font-size:15px;color:#8A7C6D;line-height:1.5">Te invitaron a vincularte con ${childName} de ${roomName}.</p></div><div style="margin:22px 28px;border:1.5px dashed #E6D08A;background:#FBF1D6;border-radius:16px;padding:18px;text-align:center"><div style="font-size:12px;font-weight:800;letter-spacing:0.7px;color:#A88526;margin-bottom:8px">CÓDIGO DE INVITACIÓN</div><div style="font-size:34px;font-weight:700;letter-spacing:7px;color:#8A7234;font-family:Georgia,serif">${code}</div><div style="margin-top:8px;font-size:13px;color:#A88526">Vence en 7 días</div><div style="margin-top:4px;font-size:12px;color:#8A7C6D">${expiresAtFormatted}</div></div><div style="padding:0 28px 28px 28px;text-align:center"><a href="/activate-account?code=${encodeURIComponent(code)}" style="display:inline-block;background:linear-gradient(to bottom,#F4977E,#EE8164);color:#fff;text-decoration:none;font-weight:800;font-size:15px;padding:14px 24px;border-radius:14px">Activar cuenta →</a><p style="margin:16px 0 0 0;font-size:13px;color:#8A7C6D">O ingresá el código manualmente en <span style="font-weight:700">/activate-account?code=${encodeURIComponent(code)}</span></p></div></div><p style="text-align:center;font-size:12px;color:#B6A99B;margin-top:16px">OpenDaycare — ${childName} · Sala ${roomName}</p></div>`;
       const { error: sendError } = await resend.emails.send({
         from: "OpenDaycare <onboarding@resend.dev>",
         to: email,
         subject: "Te invitaron a OpenDaycare",
-        react: ParentInvitationEmail({
-          childName,
-          roomName,
-          code,
-          expiresAt: expiresAtFormatted,
-        }),
+        html,
       });
       if (sendError) {
         emailError = sendError.message ?? String(sendError);
+        console.error("[inviteParent] Resend error:", sendError);
       } else {
         emailSent = true;
       }
     } catch (err) {
       emailError = err instanceof Error ? err.message : String(err);
+      console.error("[inviteParent] Resend exception:", err);
     }
   }
 
@@ -378,7 +376,8 @@ export async function acceptInvitation(payload: AcceptInvitationPayload): Promis
     if (rpcMsg.includes("invitation_expired")) throw new Error("Código inválido o expirado.");
     if (rpcMsg.includes("invitation_not_pending")) throw new Error("Esta invitación ya fue usada.");
     if (rpcMsg.includes("invitation_not_found")) throw new Error("Código inválido o expirado.");
-    if (rpcMsg.includes("not_authenticated")) throw new Error("No autenticado.");
+    if (rpcMsg.includes("not_authenticated")) throw new Error("No autenticado. Revisá que Confirm email esté desactivado en Supabase Auth.");
+    if (rpcMsg.includes("permission denied")) throw new Error("No autenticado. Revisá que Confirm email esté desactivado en Supabase Auth.");
     throw new Error(rpcMsg || "No se pudo aceptar la invitación.");
   }
 

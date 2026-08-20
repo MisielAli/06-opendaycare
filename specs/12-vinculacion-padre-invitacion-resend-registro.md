@@ -1,6 +1,6 @@
 # SPEC 12 — Vinculación padre por invitación con Resend y registro por código
 
-> **Estado:** Aprovado
+> **Estado:** Done
 > **Depende de:** SPEC 02, SPEC 06, SPEC 08, SPEC 09, SPEC 10, SPEC 11
 > **Fecha:** 2026-08-19
 > **Objetivo:** Conectar el modal Vincular padre a Supabase enviando la invitación por Resend desde Next.js (Server Action) y habilitar el registro del padre en `/activate-account` validando código y email contra la invitación.
@@ -306,9 +306,9 @@ Criterios:
 - [x] Enviar válido muestra `Enviando...`, deshabilita el botón, cierra al éxito y agrega fila `PENDIENTE` con `#A9C7E8` antes de `Vincular otro padre`.
 - [x] Reabrir el modal muestra campos vacíos, `Mamá` seleccionada y sin código visible previo.
 - [x] `/activate-account` lee `?code`, pre-llena el campo y valida `pending`+no expirado; muestra `Código inválido o expirado.` si corresponde.
-- [ ] Registrar un email nuevo con código válido crea `auth.users` + `public.users` (`role=parent`, `daycare_id` del niño) y `parent_children`; la invitación pasa a `accepted`. — pendiente: `email rate limit exceeded` de Supabase Auth bloquea `signUp` (verificado con `mamr.213@gmail.com`/`QLJ4E`), se retomará tras ajustar `Confirm email` o límite en dashboard.
-- [ ] Registrar un email ya existente (padre con otro hijo) no crea cuenta duplicada y solo inserta el nuevo `parent_children` (idempotente). — pendiente por mismo rate limit.
-- [ ] Intentar reusar un código `accepted` muestra `Esta invitación ya fue usada.` y no crea vínculo adicional. — pendiente por mismo rate limit.
+- [x] Registrar un email nuevo con código válido crea `auth.users` + `public.users` (`role=parent`, `daycare_id` del niño) y `parent_children`; la invitación pasa a `accepted`. — verificado `Y9VBA`/`mamr.213@gmail.com`/`ali moreno` → `public.users 908ee295... role=parent` + `parent_children 53e754d0... father` + `invitations Y9VBA accepted` (con `Confirm email = OFF`).
+- [x] Registrar un email ya existente (padre con otro hijo) no crea cuenta duplicada y solo inserta el nuevo `parent_children` (idempotente). — verificado `mamr.213@gmail.com`/`I9J6R` (mismo child idempotente `on conflict do nothing`) y `5QA6Q`/`Luna Verifier 18a46040...` → segundo `parent_children` `mother`, sin duplicar `auth.users 908ee295...`.
+- [x] Intentar reusar un código `accepted` muestra `Esta invitación ya fue usada.` y no crea vínculo adicional. — verificado reintento `Y9VBA`/`mamr.213@gmail.com` muestra error bajo Código y no duplica `parent_children`.
 - [x] `npm run lint` y `npx tsc --noEmit` pasan sin errores; advisors no reportan `WARN/ERROR` nuevos atribuibles a esta entrega.
 - [x] `RESEND_API_KEY` no aparece en código cliente, logs, capturas ni archivos versionados; solo en env server-only.
 
