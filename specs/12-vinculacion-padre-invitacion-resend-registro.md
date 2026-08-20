@@ -288,29 +288,29 @@ Criterios:
 
 ## Criterios de aceptación
 
-- [ ] Existen tres migraciones nuevas generadas por CLI con sufijos `add_invitation_enums`, `create_invitations` y `create_parent_children_and_rpc`.
-- [ ] `public.relationship_type` existe con `father`, `mother`, `guardian`; `public.invitation_status` con `pending`, `accepted`, `expired`, `cancelled`.
-- [ ] `public.invitations` tiene 11 columnas acordadas con tipos, defaults, checks y FK correctas.
-- [ ] `invitations.code` es `UNIQUE` y rechaza valores que no cumplan `^[A-Z0-9]{5}$`.
-- [ ] `invitations.expires_at` usa `now()+7d` por defecto y `check (expires_at > created_at)`.
-- [ ] `public.parent_children` tiene 5 columnas, `UNIQUE(parent_id,child_id)` y FK con `on delete cascade`.
-- [ ] RLS habilitado en ambas tablas; `invitations` solo permite INSERT/SELECT/UPDATE a `staff`; `parent_children` SELECT para `staff/parent/admin`, INSERT solo vía RPC.
-- [ ] `public.accept_invitation` existe, es `SECURITY DEFINER`, `search_path=''`, y es transaccional (marca `expired` si vencida, `accepted` si válida).
-- [ ] Crear una segunda invitación pendiente para el mismo `child_id+email` cancela la anterior (`cancelled`).
-- [ ] `package.json` incluye `resend`; `.env.example` documenta solo `RESEND_API_KEY` vacía (sin `RESEND_FROM`) y no contiene secretos reales.
-- [ ] `app/actions/invitations.ts` envía el correo vía `new Resend(process.env.RESEND_API_KEY).emails.send(...)` desde Next.js (no Edge Function ni trigger).
-- [ ] El correo contiene `childName`, `roomName`, código en grande, `Vence en 7 días` y link a `/activate-account?code=CODE`.
-- [ ] Si Resend falla, la invitación permanece `pending` en DB y la UI muestra `Invitación creada pero el email no pudo enviarse. Reintentá.`.
-- [ ] `Vincular otro padre` abre el modal en cada `/kids/[uuid]` con el subtítulo del niño real; el foco inicial va a Nombre y el foco queda atrapado.
-- [ ] Enviar con nombre vacío, email vacío/inválido o parentesco inválido mantiene el modal abierto y muestra error bajo el control.
-- [ ] Enviar válido muestra `Enviando...`, deshabilita el botón, cierra al éxito y agrega fila `PENDIENTE` con `#A9C7E8` antes de `Vincular otro padre`.
-- [ ] Reabrir el modal muestra campos vacíos, `Mamá` seleccionada y sin código visible previo.
-- [ ] `/activate-account` lee `?code`, pre-llena el campo y valida `pending`+no expirado; muestra `Código inválido o expirado.` si corresponde.
-- [ ] Registrar un email nuevo con código válido crea `auth.users` + `public.users` (`role=parent`, `daycare_id` del niño) y `parent_children`; la invitación pasa a `accepted`.
-- [ ] Registrar un email ya existente (padre con otro hijo) no crea cuenta duplicada y solo inserta el nuevo `parent_children` (idempotente).
-- [ ] Intentar reusar un código `accepted` muestra `Esta invitación ya fue usada.` y no crea vínculo adicional.
-- [ ] `npm run lint` y `npx tsc --noEmit` pasan sin errores; advisors no reportan `WARN/ERROR` nuevos atribuibles a esta entrega.
-- [ ] `RESEND_API_KEY` no aparece en código cliente, logs, capturas ni archivos versionados; solo en env server-only.
+- [x] Existen tres migraciones nuevas generadas por CLI con sufijos `add_invitation_enums`, `create_invitations` y `create_parent_children_and_rpc`.
+- [x] `public.relationship_type` existe con `father`, `mother`, `guardian`; `public.invitation_status` con `pending`, `accepted`, `expired`, `cancelled`.
+- [x] `public.invitations` tiene 11 columnas acordadas con tipos, defaults, checks y FK correctas.
+- [x] `invitations.code` es `UNIQUE` y rechaza valores que no cumplan `^[A-Z0-9]{5}$`.
+- [x] `invitations.expires_at` usa `now()+7d` por defecto y `check (expires_at > created_at)`.
+- [x] `public.parent_children` tiene 5 columnas, `UNIQUE(parent_id,child_id)` y FK con `on delete cascade`.
+- [x] RLS habilitado en ambas tablas; `invitations` solo permite INSERT/SELECT/UPDATE a `staff`; `parent_children` SELECT para `staff/parent/admin`, INSERT solo vía RPC.
+- [x] `public.accept_invitation` existe, es `SECURITY DEFINER`, `search_path=''`, y es transaccional (marca `expired` si vencida, `accepted` si válida).
+- [x] Crear una segunda invitación pendiente para el mismo `child_id+email` cancela la anterior (`cancelled`).
+- [x] `package.json` incluye `resend`; `.env.example` documenta solo `RESEND_API_KEY` vacía (sin `RESEND_FROM`) y no contiene secretos reales.
+- [x] `app/actions/invitations.ts` envía el correo vía `new Resend(process.env.RESEND_API_KEY).emails.send(...)` desde Next.js (no Edge Function ni trigger).
+- [x] El correo contiene `childName`, `roomName`, código en grande, `Vence en 7 días` y link a `/activate-account?code=CODE`.
+- [x] Si Resend falla, la invitación permanece `pending` en DB y la UI muestra `Invitación creada pero el email no pudo enviarse. Reintentá.`.
+- [x] `Vincular otro padre` abre el modal en cada `/kids/[uuid]` con el subtítulo del niño real; el foco inicial va a Nombre y el foco queda atrapado.
+- [x] Enviar con nombre vacío, email vacío/inválido o parentesco inválido mantiene el modal abierto y muestra error bajo el control.
+- [x] Enviar válido muestra `Enviando...`, deshabilita el botón, cierra al éxito y agrega fila `PENDIENTE` con `#A9C7E8` antes de `Vincular otro padre`.
+- [x] Reabrir el modal muestra campos vacíos, `Mamá` seleccionada y sin código visible previo.
+- [x] `/activate-account` lee `?code`, pre-llena el campo y valida `pending`+no expirado; muestra `Código inválido o expirado.` si corresponde.
+- [ ] Registrar un email nuevo con código válido crea `auth.users` + `public.users` (`role=parent`, `daycare_id` del niño) y `parent_children`; la invitación pasa a `accepted`. — pendiente: `email rate limit exceeded` de Supabase Auth bloquea `signUp` (verificado con `mamr.213@gmail.com`/`QLJ4E`), se retomará tras ajustar `Confirm email` o límite en dashboard.
+- [ ] Registrar un email ya existente (padre con otro hijo) no crea cuenta duplicada y solo inserta el nuevo `parent_children` (idempotente). — pendiente por mismo rate limit.
+- [ ] Intentar reusar un código `accepted` muestra `Esta invitación ya fue usada.` y no crea vínculo adicional. — pendiente por mismo rate limit.
+- [x] `npm run lint` y `npx tsc --noEmit` pasan sin errores; advisors no reportan `WARN/ERROR` nuevos atribuibles a esta entrega.
+- [x] `RESEND_API_KEY` no aparece en código cliente, logs, capturas ni archivos versionados; solo en env server-only.
 
 ## Decisiones tomadas y descartadas
 

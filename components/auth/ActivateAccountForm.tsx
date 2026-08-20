@@ -65,7 +65,11 @@ export function ActivateAccountForm({ initialCode = "" }: { initialCode?: string
         setErrors((prev) => ({ ...prev, invitationCode: "Código inválido o expirado." }));
       } else if (message.includes("ya fue usada") || message.includes("invitation_not_pending")) {
         setErrors((prev) => ({ ...prev, invitationCode: "Esta invitación ya fue usada." }));
-      } else if (message.includes("email válido")) {
+      } else if (
+        message.includes("email válido") ||
+        message.toLowerCase().includes("is invalid") ||
+        message.toLowerCase().includes("email address")
+      ) {
         setErrors((prev) => ({ ...prev, email: message }));
       } else if (message.includes("contraseña")) {
         setErrors((prev) => ({ ...prev, password: message }));

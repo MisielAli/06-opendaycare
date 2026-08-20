@@ -304,20 +304,13 @@ export async function acceptInvitation(payload: AcceptInvitationPayload): Promis
     if (new Date(invitationContext.expires_at) <= new Date()) {
       throw new Error("Código inválido o expirado.");
     }
+  } else {
+    throw new Error("Código inválido o expirado.");
   }
 
-  // Derive daycare_id and full_name for signUp: prefer context, else fallback to lookup via child if we have it
-  let daycareIdForSignup = invitationContext?.daycare_id ?? null;
-  const fullNameForSignup = invitationContext?.full_name ?? email.split("@")[0];
-
-  // If still no daycare, try to get first daycare as last resort (should not happen)
-  if (!daycareIdForSignup) {
-    const { data: daycare } = await supabase.from("daycares").select("id").limit(1).maybeSingle();
-    if (daycare) daycareIdForSignup = (daycare as { id: string }).id;
-  }
-  if (!daycareIdForSignup) {
-    throw new Error("No se pudo determinar la guardería.");
-  }
+  // Derive daycare_id and full_name for signUp
+  const daycareIdForSignup = invitationContext.daycare_id;
+  const fullNameForSignup = invitationContext.full_name;
 
   // Attempt signUp, if already exists then signIn
   let authUserId: string | null = null;
@@ -352,6 +345,10 @@ export async function acceptInvitation(payload: AcceptInvitationPayload): Promis
       }
       authUserId = signInData.user?.id ?? null;
     } else {
+      const lowerMsg = signUpError.message?.toLowerCase() ?? "";
+      if (lowerMsg.includes("is invalid") || lowerMsg.includes("invalid") || lowerMsg.includes("email address")) {
+        throw new Error("Ingresá un email válido. Usá un dominio real (ej. @gmail.com).");
+      }
       throw new Error(signUpError.message);
     }
   } else {
