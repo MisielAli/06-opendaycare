@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useId } from "react";
 
 import {
   login,
@@ -21,12 +21,15 @@ const formErrorMessages: Record<LoginError, string> = {
 };
 
 export function LoginForm({ next = "/", initialError }: LoginFormProps) {
-  const initialState: LoginActionState = initialError
-    ? { formError: initialError }
-    : {};
-  const [state, formAction, isPending] = useActionState(login, initialState);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, formAction, isPending] = useActionState(
+    login,
+    (initialError ? { formError: initialError } : {}) as LoginActionState,
+  );
+  const emailId = useId();
+  const passwordId = useId();
+  const formErrorId = useId();
+  const emailErrorId = `${emailId}-error`;
+  const passwordErrorId = `${passwordId}-error`;
   const emailError = state.fieldErrors?.email;
   const passwordError = state.fieldErrors?.password;
   const formErrorMessage = state.formError
@@ -44,7 +47,9 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
 
       {formErrorMessage && (
         <p
+          id={formErrorId}
           role="alert"
+          aria-live="polite"
           className="mb-4 rounded-[12px] border border-primary/25 bg-primary/10 px-3.5 py-3 text-[13px] font-bold text-primary-deep"
         >
           {formErrorMessage}
@@ -53,24 +58,29 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
 
       <div className="mb-[18px]">
         <label
-          htmlFor="login-email"
+          htmlFor={emailId}
           className="mb-2 block text-[12px] font-extrabold tracking-[0.7px] text-text-muted"
         >
           EMAIL
         </label>
         <input
-          id="login-email"
+          id={emailId}
           name="email"
           type="email"
           autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          required
+          aria-required="true"
+          disabled={isPending}
           aria-invalid={Boolean(emailError)}
-          aria-describedby={emailError ? "login-email-error" : undefined}
-          className="w-full rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/15"
+          aria-describedby={emailError ? emailErrorId : undefined}
+          className="w-full rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:opacity-60"
         />
         {emailError && (
-          <p id="login-email-error" className="mt-1.5 text-[13px] font-bold text-primary">
+          <p
+            id={emailErrorId}
+            role="alert"
+            className="mt-1.5 text-[13px] font-bold text-primary"
+          >
             {emailError}
           </p>
         )}
@@ -78,25 +88,30 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
 
       <div>
         <label
-          htmlFor="login-password"
+          htmlFor={passwordId}
           className="mb-2 block text-[12px] font-extrabold tracking-[0.7px] text-text-muted"
         >
           CONTRASEÑA
         </label>
         <input
-          id="login-password"
+          id={passwordId}
           name="password"
           type="password"
           autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          required
+          aria-required="true"
+          disabled={isPending}
           placeholder="••••••••"
           aria-invalid={Boolean(passwordError)}
-          aria-describedby={passwordError ? "login-password-error" : undefined}
-          className="w-full rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition placeholder:text-[#b6a99b] focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/15"
+          aria-describedby={passwordError ? passwordErrorId : undefined}
+          className="w-full rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition placeholder:text-[#b6a99b] focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:opacity-60"
         />
         {passwordError && (
-          <p id="login-password-error" className="mt-1.5 text-[13px] font-bold text-primary">
+          <p
+            id={passwordErrorId}
+            role="alert"
+            className="mt-1.5 text-[13px] font-bold text-primary"
+          >
             {passwordError}
           </p>
         )}
@@ -114,6 +129,7 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
       <button
         type="submit"
         disabled={isPending}
+        aria-disabled={isPending}
         className="w-full rounded-[15px] bg-gradient-to-b from-[#f4977e] to-[#ee8164] px-4 py-[15px] text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] outline-none transition hover:brightness-105 focus-visible:ring-4 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:brightness-100"
       >
         {isPending ? "Ingresando..." : "Iniciar sesión"}
