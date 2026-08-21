@@ -66,6 +66,18 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - `supabase`: required for every Supabase-related task
 - `supabase-postgres-best-practices`: required before Postgres schema, SQL, RLS, migration, performance, or database security work
 
+## Agents (`.opencode/agent/`)
+
+- `accessibility-checker` (`.opencode/agent/accessibility-checker.md`): Audita y corrige accesibilidad **WCAG 2.2 AA** en archivos indicados, verificado con **Context7** (MDN/WCAG/axe-core). Sin dependencias (analisis estatico + `playwright_browser_snapshot`; `axe-core` opcional via CDN con `playwright_browser_evaluate` sin tocar `package.json`). Entrada: rutas exactas, globs o directorios (`components/feed/PostCard.tsx`, `components/**/*.tsx`, `app/`). Uso: `Task(subagent_type: "accessibility-checker")` o slash `/accessibility-check <archivos>`.
+- `react-best-practices` (`.opencode/agent/react-best-practices.md`): Aplica mejores practicas de React 19 / Next.js 16 verificadas con Context7 y corrige desviaciones.
+- `db-migrator` (`.opencode/agent/db-migrator.md`): Valida, crea y aplica migraciones Supabase con conciencia de performance.
+- `spec-verifier` (`.opencode/agent/spec-verifier.md`): Verifica criterios de aceptacion de specs usando Context7 y Playwright.
+
+## Commands (`.opencode/command/`)
+
+- `/accessibility-check` → agente `accessibility-checker` (`$ARGUMENTS` = archivos/globs/dir)
+- `/verify-spec` → agente `spec-verifier`
+
 
 ## Reglas de codigo
 

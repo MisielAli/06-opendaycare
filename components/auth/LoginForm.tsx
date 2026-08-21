@@ -41,6 +41,7 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
       action={formAction}
       noValidate
       aria-busy={isPending}
+      aria-describedby={formErrorMessage ? formErrorId : undefined}
       className="w-full"
     >
       <input type="hidden" name="next" value={next} />
@@ -49,7 +50,6 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
         <p
           id={formErrorId}
           role="alert"
-          aria-live="polite"
           className="mb-4 rounded-[12px] border border-primary/25 bg-primary/10 px-3.5 py-3 text-[13px] font-bold text-primary-deep"
         >
           {formErrorMessage}
@@ -101,7 +101,6 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
           required
           aria-required="true"
           disabled={isPending}
-          placeholder="••••••••"
           aria-invalid={Boolean(passwordError)}
           aria-describedby={passwordError ? passwordErrorId : undefined}
           className="w-full rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white px-4 py-3.5 text-[15px] text-foreground outline-none transition placeholder:text-[#b6a99b] focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/15 disabled:cursor-not-allowed disabled:opacity-60"
@@ -120,7 +119,7 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
       <div className="mb-5 mt-2.5 text-right">
         <button
           type="button"
-          className="rounded text-[13.5px] font-bold text-primary-deep outline-none transition hover:text-primary focus-visible:ring-4 focus-visible:ring-primary/15"
+          className="inline-flex min-h-[24px] items-center rounded px-1 py-1 text-[13.5px] font-bold text-primary-deep outline-none transition hover:text-primary focus-visible:ring-4 focus-visible:ring-primary/15"
         >
           ¿Olvidaste tu contraseña?
         </button>
@@ -129,7 +128,6 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
       <button
         type="submit"
         disabled={isPending}
-        aria-disabled={isPending}
         className="w-full rounded-[15px] bg-gradient-to-b from-[#f4977e] to-[#ee8164] px-4 py-[15px] text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,.7)] outline-none transition hover:brightness-105 focus-visible:ring-4 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:brightness-100"
       >
         {isPending ? "Ingresando..." : "Iniciar sesión"}
@@ -139,7 +137,7 @@ export function LoginForm({ next = "/", initialError }: LoginFormProps) {
         ¿Te invitó la guardería?{" "}
         <Link
           href="/activate-account"
-          className="rounded font-extrabold text-primary-deep outline-none transition hover:text-primary focus-visible:ring-4 focus-visible:ring-primary/15"
+          className="inline-flex min-h-[24px] items-center rounded px-1 py-0.5 font-extrabold text-primary-deep outline-none transition hover:text-primary focus-visible:ring-4 focus-visible:ring-primary/15"
         >
           Activá tu cuenta
         </Link>
